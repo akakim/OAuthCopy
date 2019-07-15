@@ -1,4 +1,4 @@
-package com.dreamsecurity.ssooauth.common;
+package com.dreamsecurity.ssooauth.common.logger;
 
 import android.content.Context;
 
@@ -37,6 +37,11 @@ public class LoggerStrategyFileLog implements Logger.ILoggerStrategy {
 
     @Override
     public void w(String tag, String msg) {
+
+    }
+
+    @Override
+    public void e(String tag, String msg) {
 
     }
 

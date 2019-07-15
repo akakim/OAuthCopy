@@ -1,7 +1,6 @@
-package com.dreamsecurity.ssooauth.common;
+package com.dreamsecurity.ssooauth.common.logger;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  *
@@ -12,7 +11,7 @@ public class Logger {
         void setTagPrefix(String tagPrefix);
         void i(String tag,String msg);
         void w(String tag,String msg);
-
+        void e(String tag,String msg);
         void d(String tag,String msg);
         void v(String tag,String msg);
         void write(int level,String tag,String msg);
@@ -26,6 +25,10 @@ public class Logger {
     public static void setTagPrefix(String tagPrefix) {
         Logger.tagPrefix = tagPrefix;
         logger.setTagPrefix( tagPrefix );
+    }
+
+    public static boolean isRealVersion() {
+        return realVersion;
     }
 
     public static void setRealVersion(boolean realVersion) {
@@ -47,23 +50,27 @@ public class Logger {
 //        logger = LoggerStrategyLog.getInstance()
     }
 
-    public void i(String tag, String msg) {
+    public static void i(String tag, String msg) {
         logger.i(tag,msg);
     }
 
-    public void w(String tag, String msg) {
+    public static void w(String tag, String msg) {
         logger.w( tag , msg);
     }
 
-    public void d(String tag, String msg) {
+    public static void d(String tag, String msg) {
         logger.d( tag, msg );
     }
 
-    public void v(String tag, String msg) {
+    public static void v(String tag, String msg) {
         logger.v(tag,msg);
     }
 
-    public void write(int level, String tag, String msg) {
+    public static void e(String tag, String msg) {
+        logger.e(tag,msg);
+    }
+
+    public static void write(int level, String tag, String msg) {
        logger.write( level, tag, msg);
     }
 }

@@ -1,4 +1,4 @@
-package com.dreamsecurity.ssooauth.common;
+package com.dreamsecurity.ssooauth.common.logger;
 
 public class LoggerStrategyNoLog implements Logger.ILoggerStrategy {
     @Override
@@ -13,6 +13,11 @@ public class LoggerStrategyNoLog implements Logger.ILoggerStrategy {
 
     @Override
     public void w(String tag, String msg) {
+
+    }
+
+    @Override
+    public void e(String tag, String msg) {
 
     }
 
