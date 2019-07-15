@@ -12,19 +12,67 @@ import java.util.List;
 public class ResponseData {
     private final String TAG = "ResponseData";
 
-    public ResponseDataStat 	stat;
-    public int 					statusCode;
-    public String 				content;
-    public String 				errorDetail;
-    public List<String>         cookieList;
-    public String				xmlEncoding;
-    public ResponseData() {
+    private ResponseDataStat 	stat;
+    private int 					statusCode;
+    private String 				content;
+    private String 				errorDetail;
+    private List<String>         cookieList;
+    private String				xmlEncoding;
+    ResponseData() {
         stat = ResponseDataStat.SUCCESS;
         statusCode = -1;
         content = "";
         errorDetail = "";
         cookieList = new ArrayList<String>();
         xmlEncoding = "utf-8";
+    }
+
+    public ResponseDataStat getStat() {
+        return stat;
+    }
+
+    public void setStat(ResponseDataStat stat) {
+        this.stat = stat;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getErrorDetail() {
+        return errorDetail;
+    }
+
+    public void setErrorDetail(String errorDetail) {
+        this.errorDetail = errorDetail;
+    }
+
+    public List<String> getCookieList() {
+        return cookieList;
+    }
+
+    public void setCookieList(List<String> cookieList) {
+        this.cookieList = cookieList;
+    }
+
+    public String getXmlEncoding() {
+        return xmlEncoding;
+    }
+
+    public void setXmlEncoding(String xmlEncoding) {
+        this.xmlEncoding = xmlEncoding;
     }
 
     public enum ResponseDataStat{

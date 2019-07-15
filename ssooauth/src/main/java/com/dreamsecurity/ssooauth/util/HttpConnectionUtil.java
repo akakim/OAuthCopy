@@ -1,4 +1,4 @@
-package com.dreamsecurity.ssooauth.common.util;
+package com.dreamsecurity.ssooauth.util;
 
 import com.dreamsecurity.ssooauth.common.logger.Logger;
 

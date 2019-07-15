@@ -3,7 +3,8 @@ package com.dreamsecurity.ssooauth.common.connect;
 
 import android.content.Context;
 import com.dreamsecurity.ssooauth.common.logger.Logger;
-import com.dreamsecurity.ssooauth.common.util.HttpConnectionUtil
+import com.dreamsecurity.ssooauth.magiclogin.OAuthLoginDefine;
+import com.dreamsecurity.ssooauth.util.HttpConnectionUtil;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 쿠키 부분은 기본적으로 Minsdk가 21이 넘기 때문에 삭제.
+ *
  * 서버에서의 request 시 사용할 수 있는 class
  */
 public class CommonConnect {
@@ -27,6 +30,30 @@ public class CommonConnect {
     public CommonConnect() {
     }
 
+    /**
+     * URL 로 request 후 reponse로 ResponseData를 리턴
+     * @param context context
+     * @param strRequestUrl request url
+     * @param cookies cookie string
+     * @param userAgent useragent
+     * @return : url request 로 얻은 response data를 리턴. response data는 content 와 status-code, cookie 로 구성됨
+     */
+    public static ResponseData request(Context context, String strRequestUrl, String cookies, String userAgent) {
+        return request(context, strRequestUrl, cookies, userAgent, false);
+    }
+
+
+    public static ResponseData request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader) {
+        return request(context, strRequestUrl, cookies, userAgent, authHeader, false, OAuthLoginDefine.TIMEOUT);
+    }
+
+    public static ResponseData request(Context context, String strRequestUrl, String cookies, String userAgent, boolean httpClientIsolated) {
+        return request(context, strRequestUrl, cookies, userAgent, null, httpClientIsolated, OAuthLoginDefine.TIMEOUT);
+    }
+
+    public static ResponseData request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated) {
+        return request(context, strRequestUrl, cookies, userAgent, authHeader, httpClientIsolated, OAuthLoginDefine.TIMEOUT);
+    }
 
     public static ResponseData request(Context context,String strRequestUrl,String cookies,String userAgent,String authHeader, boolean httpClientIsolated,int timeout){
 
@@ -160,10 +187,17 @@ public class CommonConnect {
             if (httpClientIsolated) {
                 httpClient = null;
             } else {
-                //mHttpUrlConnection = null;
+                httpURLConnection = null;
             }
         }
 
+        if( cancel ){
+            ResponseData cc = new ResponseData();
+            cc.setResultCode( ResponseData.ResponseDataStat.CANCEL,"User Cancel");
+            return cc;
+        }
+
+        return res;
     }
 
     /**

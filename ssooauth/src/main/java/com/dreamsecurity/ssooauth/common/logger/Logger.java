@@ -73,4 +73,16 @@ public class Logger {
     public static void write(int level, String tag, String msg) {
        logger.write( level, tag, msg);
     }
+
+    public static void write(Exception exception) {
+        if (exception == null) {
+            return;
+        }
+        e("Exception", exception.toString());
+        StackTraceElement[] elem = exception.getStackTrace();
+        for (int i = 0; i < elem.length; ++i) {
+            e("Exception", elem[i].toString());
+        }
+    }
+
 }
