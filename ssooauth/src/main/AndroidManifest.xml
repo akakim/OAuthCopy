@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.dreamsecurity.ssooauth">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application>
-        <activity android:name=".magiclogin.ui.MainActivity">
+        <activity android:name=".magiclogin.ui.OAuthLoginActivity">
         </activity>
     </application>
 

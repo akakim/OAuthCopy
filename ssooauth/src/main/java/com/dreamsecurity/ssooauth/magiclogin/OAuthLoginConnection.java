@@ -19,7 +19,6 @@ public class OAuthLoginConnection extends CommonConnect {
 
     private static final String TAG = "OAuthLoginConnection";
 
-
     /**
      * access token 요청
      * @param context context

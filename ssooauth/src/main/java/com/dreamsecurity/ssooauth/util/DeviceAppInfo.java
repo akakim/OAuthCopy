@@ -1,14 +1,19 @@
 package com.dreamsecurity.ssooauth.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.text.TextUtils;
 import com.dreamsecurity.ssooauth.common.logger.Logger;
 import com.dreamsecurity.ssooauth.magiclogin.OAuthLogin;
+import com.dreamsecurity.ssooauth.magiclogin.OAuthLoginDefine;
 
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Locale;
 
 public class DeviceAppInfo {
@@ -93,4 +98,98 @@ public class DeviceAppInfo {
 
         return strLanguage;
     }
+
+    /**
+     * 현재 디바이스에 packageName에 IntentFilter가 설정 되어 있는 앱이 있는 지 검색
+     *
+     * @param context 앱 컨텍스트
+     * @param packageName 검색할 패키지 명
+     * @param intentName 검색할 필터 명
+     * @return 존재 여부
+     */
+    public static boolean isIntentFilterExist(Context context, String packageName, String intentName) {
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(new Intent(intentName), PackageManager.GET_META_DATA);
+        for (ResolveInfo resolveInfo : list) {
+            if (!Logger.isRealVersion()) {
+                Logger.d(TAG, "intent filter name:" + intentName);
+                Logger.d(TAG, "package name:" + resolveInfo.activityInfo.packageName + ", " + resolveInfo.activityInfo.name);
+            }
+            if (packageName.equalsIgnoreCase(resolveInfo.activityInfo.packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isIntentFilterExist(Context context, String intentName) {
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(new Intent(intentName), PackageManager.GET_META_DATA);
+        for (ResolveInfo resolveInfo : list) {
+            if (!Logger.isRealVersion()) {
+                Logger.d(TAG, "intent filter name:" + intentName);
+                Logger.d(TAG, "package name:" + resolveInfo.activityInfo.packageName + ", " + resolveInfo.activityInfo.name);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 네이버앱을 제외한 앱들 중 oauth2 master 앱인 것 중 appstore 가 있으면 appstore 를 리턴하고 없으면 나머지 중 하나를 리턴한다.
+     * @param context activity context
+     * @return oauth2 master 앱 중 하나의 package name
+     */
+    public static String getPrimaryNaverOAuth2ndAppPackageName(Context context) {
+        try {
+            // TODO task permission 설정 안한 경우 동작 어떻게 할지 고려하기
+            String[] appList = {"com.nhn.android.appstore"};
+            List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(
+                    new Intent(OAuthLoginDefine.ACTION_OAUTH_2NDAPP),
+                    PackageManager.GET_META_DATA);
+
+            for (String appName : appList) {
+                for (ResolveInfo resolveInfo : list) {
+                    if (!Logger.isRealVersion()) {
+                        Logger.d(TAG, "package name:" + resolveInfo.activityInfo.packageName + ", " + resolveInfo.activityInfo.name);
+                    }
+                    if (resolveInfo.activityInfo.packageName.equals(appName)) {
+                        return resolveInfo.activityInfo.packageName;
+                    }
+                }
+            }
+
+            if (!Logger.isRealVersion()) {
+                Logger.d(TAG, "no app assinged in order-list. package name:" + list.get(0).activityInfo.packageName + ", " + list.get(0).activityInfo.name);
+            }
+
+            // TODO phishing 의 우려가 있으므로 제거 추후 서버에서 app list 받아올 수 있도록 개발하기
+            //return list.get(0).activityInfo.packageName;
+
+        } catch (Exception e) {
+
+        }
+
+        return null;
+    }
+
+    /**
+     * 앱 이름 알려줌
+     * @param context activity context
+     * @return 앱 label 명
+     */
+    public static String getApplicationName(Context context) {
+        PackageManager lPackageManager = context.getPackageManager();
+        ApplicationInfo lApplicationInfo;
+        String appName = "NAVER";
+
+        try {
+            lApplicationInfo = lPackageManager.getApplicationInfo(context.getApplicationInfo().packageName, 0);
+            appName = (String)lPackageManager.getApplicationLabel(lApplicationInfo);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return appName;
+    }
+
 }

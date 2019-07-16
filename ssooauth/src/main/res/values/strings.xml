@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SSOOAuth</string>
+    <string name="app_name">DreamOAuthLibrary</string>
+    <string name="magic_sso_string_getting_token">MagicOAuth</string>
+    <string name="magic_sso_string_group_id_not_available">Group ID can\'t be used to \'Sign in with NAVER\'. Please sign in as a normal account.</string>
+    <string name="magic_sso_string_network_state_not_available">Network is not available. Please check your network connection and try again.</string>
+    <string name="magic_sso_string_token_invalid">Quick Sign-in account has been expired.</string>
+
+    <string name="retry">Retry</string>
+    <string name="use_application">Open with</string>
 </resources>
