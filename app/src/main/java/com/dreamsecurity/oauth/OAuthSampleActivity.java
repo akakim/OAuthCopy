@@ -49,6 +49,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
         findViewById( R.id.btnAuthentication).setOnClickListener( this );
         findViewById( R.id.btnLogout).setOnClickListener( this );
         findViewById( R.id.btnRefresh).setOnClickListener( this );
+        findViewById( R.id.btnCustomChromeTab).setOnClickListener( this );
         tvAccessToken = findViewById( R.id.tvAccessToken);
         tvRefreshToken = findViewById( R.id.tvRefreshToken);
         tvExpired = findViewById( R.id.tvExpires );
@@ -76,6 +77,9 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnLogout:
                 break;
             case R.id.btnRefresh:
+                break;
+            case R.id.btnCustomChromeTab:
+                startActivity( new Intent( this , CustsomTabBrowererActivity.class ));
                 break;
         }
     }

@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import com.dreamsecurity.ssooauth.magiclogin.OAuthLogin;
 import com.dreamsecurity.ssooauth.magiclogin.OAuthLoginHandler;
 
-public class OAuthLoginButton extends ImageView {
+//import static java.security.AccessController.getContext;
+
+public class OAuthLoginButton extends android.support.v7.widget.AppCompatImageView {
 
     public static final String TAG = "OAuthLoginButton";
     private Context context;
@@ -35,7 +37,7 @@ public class OAuthLoginButton extends ImageView {
     private void init(Context context){
         this.context = context;
 
-        setOnClickListener(new OnClickListener() {
+        setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OAuthLogin.getInstance();getContext();

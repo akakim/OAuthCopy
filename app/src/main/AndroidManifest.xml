@@ -11,6 +11,8 @@
             android:theme="@style/AppTheme">
         <activity android:name=".OAuthSampleActivity">
         </activity>
+
+        <activity android:name=".CustsomTabBrowererActivity"/>
     </application>
 
 </manifest>

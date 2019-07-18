@@ -72,8 +72,7 @@
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvScope"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbarTrackVertical="true"/>
+                android:layout_height="match_parent"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -96,6 +95,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/btnRefresh"
             android:text="로그인 연장">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnCustomChromeTab"
+            android:text="커스텀 크롭 탭">
 
     </androidx.appcompat.widget.AppCompatButton>
 
