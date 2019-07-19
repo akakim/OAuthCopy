@@ -1,10 +1,30 @@
 <resources>
     <string name="app_name">OAuthCopyApp</string>
 
+
+    <string name="action_create_notification">Create Notification</string>
+    <string name="title_activity_notification_parent">Notification Demo</string>
+    <string name="title_activity_webview">WebviewActivity</string>
+    <string name="notification_title">Open Web Content</string>
+    <string name="notification_text">Open your web content on Chrome Custom Tabs</string>
+    <string name="notification_sample_url">https://developer.chrome.com/multidevice/android/customtabs</string>
+    <string name="label_url">URL:</string>
+    <string name="default_test_url">http://developer.android.com</string>
+    <string name="back_to_app">Back to your application!</string>
+    <string name="label_start_custom_tab">Open Custom Tab</string>
+    <string name="label_add_menus">Add Menus</string>
+    <string name="label_add_action_button">Add Action Button</string>
+    <string name="label_action">Perform Action</string>
+
+    <string name="label_toobar_color">Toolbar Color:</string>
+    <string name="default_toolbar_color">#980e03</string>
+    <string name="menu_item_title">Sample Menu Item</string>
+    <string name="label_may_launch_url">May Launch URL</string>
+
     <!-- Demo Activities Titles -->
     <string name="title_activity_simple_chrome_tab">Simple Chrome Custom Tab</string>
     <string name="title_activity_customized_chrome_tab">Customized UI Chrome Custom Tab</string>
-    <string name="title_activity_service_connection">Service Connection Activity(Important)</string>
+    <string name="title_activity_service_connection">Service Connection Activity</string>
     <string name="title_activity_browser_actions">Browser Actions Demo</string>
 
     <!-- Demo Activities Descriptions -->

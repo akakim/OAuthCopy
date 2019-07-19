@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustsomTabBrowererActivity extends Activity {
@@ -21,14 +23,29 @@ public class CustsomTabBrowererActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView( R.layout.activity_custom_tab_browser);
 
-        ActivityDesc activityDesc = createActivityDesc(R.string.title_activity_simple_chrome_tab,
-                R.string.description_activity_simple_chrome_tab,
-                SimpleCustomTabActivity.class);
-        activityDescList.add(activityDesc);
+        List<ActivityDesc> activityDescList = new ArrayList<>();
+        ActivityListAdapter listAdapter = new ActivityListAdapter(this, activityDescList);
 
+/*        ActivityDesc activityDesc = createActivityDesc(R.string.title_activity_simple_chrome_tab,
+                R.string.description_activity_simple_chrome_tab,
+                SimpleCustomChromeTab.class);*/
+        activityDescList.add(createActivityDesc(R.string.title_activity_simple_chrome_tab,
+                R.string.description_activity_simple_chrome_tab,
+                SimpleCustomChromeTab.class));
+
+        activityDescList.add(createActivityDesc(R.string.title_activity_service_connection,
+                R.string.description_activity_service_connection,
+                SimpleCustomChromeTab.class));
+
+        activityDescList.add(createActivityDesc(R.string.title_activity_simple_chrome_tab,
+                R.string.description_activity_simple_chrome_tab,
+                SimpleCustomChromeTab.class));
+
+        activityDescList.add(createActivityDesc(R.string.title_activity_simple_chrome_tab,
+                R.string.description_activity_simple_chrome_tab,
+                SimpleCustomChromeTab.class));
 
         RecyclerView recyclerView = (RecyclerView) findViewById(android.R.id.list);
         recyclerView.setAdapter(listAdapter);
@@ -49,6 +66,15 @@ public class CustsomTabBrowererActivity extends Activity {
         customTabsIntent.launchUrl(this, Uri.parse(url));*/
 
 
+    }
+
+    private ActivityDesc createActivityDesc(int titleId, int descriptionId,
+                                            Class<? extends Activity> activity) {
+        ActivityDesc activityDesc = new ActivityDesc();
+        activityDesc.mTitle = getString(titleId);
+        activityDesc.mDescription = getString(descriptionId);
+        activityDesc.mActivity = activity;
+        return activityDesc;
     }
 
     private static class ActivityDesc {
