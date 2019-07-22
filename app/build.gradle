@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -20,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    ext.auth_end_point = 'http://10.10.30.196:50001/authorize?'
+    ext.token_end_point = 'http://10.10.30.196:50001/token?'
 }
 
 dependencies {
@@ -31,7 +35,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    //implementation project(path: ':ssooauth')
+    implementation project(path: ':ssooauth')
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
     implementation 'androidx.browser:browser:1.0.0'
 }

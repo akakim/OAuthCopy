@@ -42,8 +42,8 @@ public class CustomTabsHelper {
         if( packageNameToUse != null )
                 return packageNameToUse;
 
-        PackageManager pm = context.getPackageManager();
-        Intent activityIntent =new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.naver.com/"));
+        PackageManager pm       = context.getPackageManager();
+        Intent activityIntent   = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.naver.com/"));
         ResolveInfo defaultViewHandlerInfo = pm.resolveActivity(activityIntent, 0);
         String defaultViewHandlerPackageName = null;
 
