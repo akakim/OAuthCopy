@@ -2,12 +2,9 @@ package com.dreamsecurity.oauth;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 /*import com.dreamsecurity.ssooauth.common.connect.CommonConnect;
@@ -81,7 +78,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnRefresh:
                 break;
             case R.id.btnCustomChromeTab:
-                startActivity( new Intent( this , CustsomTabBrowererActivity.class ));
+                startActivity( new Intent( this , CustomTabBrowserActivity.class ));
                 break;
         }
     }

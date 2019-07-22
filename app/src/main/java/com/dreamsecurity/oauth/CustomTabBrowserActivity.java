@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustsomTabBrowererActivity extends Activity {
+public class CustomTabBrowserActivity extends Activity {
 
     String url = "https://paul.kinlan.me/";
 
@@ -37,7 +37,7 @@ public class CustsomTabBrowererActivity extends Activity {
 
         activityDescList.add(createActivityDesc(R.string.title_activity_service_connection,
                 R.string.description_activity_service_connection,
-                SimpleCustomChromeTab.class));
+                ServiceConnectionActivity.class));
 
         activityDescList.add(createActivityDesc(R.string.title_activity_simple_chrome_tab,
                 R.string.description_activity_simple_chrome_tab,
@@ -47,7 +47,7 @@ public class CustsomTabBrowererActivity extends Activity {
                 R.string.description_activity_simple_chrome_tab,
                 SimpleCustomChromeTab.class));
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(android.R.id.list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvSampleList);
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

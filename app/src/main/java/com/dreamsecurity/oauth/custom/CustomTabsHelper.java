@@ -41,8 +41,9 @@ public class CustomTabsHelper {
     public static String getPackageNameTouse(Context context){
         if( packageNameToUse != null )
                 return packageNameToUse;
-            PackageManager pm = context.getPackageManager();
-        Intent activityIntent =new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.example.com"));
+
+        PackageManager pm = context.getPackageManager();
+        Intent activityIntent =new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.naver.com/"));
         ResolveInfo defaultViewHandlerInfo = pm.resolveActivity(activityIntent, 0);
         String defaultViewHandlerPackageName = null;
 
@@ -60,7 +61,11 @@ public class CustomTabsHelper {
             serviceIntent.setAction(ACTION_CUSTOM_TABS_CONNECTION);
             serviceIntent.setPackage( info.activityInfo.packageName);
             if (pm.resolveService(serviceIntent, 0) != null) {
+
                 packagesSupportingCustomTabs.add(info.activityInfo.packageName);
+
+                Log.d( TAG, "package Custom Tab tax" + info.activityInfo.packageName);
+
             }
         }
 
