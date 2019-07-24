@@ -1,4 +1,4 @@
-package com.dreamsecurity.oauth.custom;
+package com.dreamsecurity.oauth.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,13 +12,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import com.dreamsecurity.oauth.R;
+import com.dreamsecurity.oauth.custom.*;
 import com.dreamsecurity.oauth.custom.common.CustomTabDialogFragment;
 import com.dreamsecurity.oauth.custom.common.HttpUtil;
 import com.dreamsecurity.oauth.custom.common.OAuthErrorCode;
 import com.dreamsecurity.oauth.custom.common.Logger;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class OAuthCustomTabActivity extends FragmentActivity implements ServiceConnectionCallback,OAuthCallback {
+public class OAuthCustomTabActivity extends FragmentActivity implements ServiceConnectionCallback, OAuthCallback {
 
     public static final String TAG = OAuthCustomTabActivity.class.getSimpleName();
     public static final String SAVE_CUSTOM_TAB_OPEN = "isCustomTabOpen";

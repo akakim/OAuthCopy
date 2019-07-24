@@ -95,6 +95,7 @@ public class HttpUtil {
         resultMap.put( Constant.PARAM_APP_TYPE , inAppType );
         resultMap.put(Constant.PARAM_OS, "android");
         resultMap.put(Constant.PARAM_VERSION, "android-"+ version);
+        resultMap.put(Constant.PARAM_KEY_RESPONSE_TYPE, Constant.PARAM_VALUE_RESPONSE_CODE);
 
         return String.format("%s%s", Constant.OAUTH_REQUEST_AUTH_URL , getQueryParameter( resultMap ));
     }

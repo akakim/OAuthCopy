@@ -136,19 +136,6 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
 
     }
 
-    @Override
-    public String generateState() {
-        SecureRandom random = new SecureRandom();
-
-        String state = new BigInteger(130,random).toString(32);
-
-        try{
-            return URLEncoder.encode(state,"UTF-8");
-        } catch (UnsupportedEncodingException e){
-            return state;
-        }
-    }
-
     /**
      * 커스텀 탭을 이용해 url을 호출한다.
      * 커스텀 탭 사용가능 앱이 여러개 일경우 다이얼 로그를

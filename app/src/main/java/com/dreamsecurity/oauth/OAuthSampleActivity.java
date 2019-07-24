@@ -9,9 +9,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.dreamsecurity.oauth.custom.OAuthCustomTabActivity;
+import com.dreamsecurity.oauth.activity.OAuthCustomTabActivity;
 import com.dreamsecurity.oauth.custom.OAuthPresenter;
-import com.dreamsecurity.oauth.custom.common.Constant;
 
 
 public class OAuthSampleActivity extends AppCompatActivity implements View.OnClickListener{
@@ -89,7 +88,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
 
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6");
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_SECRET, "ALnxTUqecvZkmBhTQTPOOzr4W4cTlL4k-1TSLrvm4sNgxeN1SYHWakmODgouraM6BnJrj9LT0as6g6cjlSzClyM");
-                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, "dreamTestlogin://authorize/");
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, "dreamtestlogin://authorize/");
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_STATE, "111");
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_OAUTH_SDK_VERSION, BuildConfig.VERSION_NAME);
 //                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_RESPONSE_TYPE, BuildConfig.VERSION_NAME);

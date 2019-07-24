@@ -3,8 +3,9 @@ package com.dreamsecurity.oauth.custom;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+import com.dreamsecurity.oauth.custom.common.Constant;
 
-public interface OAuthPresenter {
+public interface OAuthPresenter extends Constant {
 
     // 로그인 페이지를 요청시 사용함 .
     String INTENT_KEY_CLIENT_ID = "client_id";
@@ -28,10 +29,20 @@ public interface OAuthPresenter {
     String EXTRA_KEY_ERROR_DESCRIPTION = "error_des";
     String PARAM_LOCALE_CODE = "locale";
 
+    String EXTRA_ACCESS_TOKEN = "access_token";
+    /// OAuth 인증 성공 후 token_secret 값을 얻기 위한 Extra field 명.
+    String EXTRA_REFRESH_TOKEN = "refresh_token";
+
+    String EXTRA_EXPIRES_IN = "expires_in";
+    String EXTRA_TOKEN_TYPE = "token_type";
+    String EXTRA_OAUTH_STATE = "oauth_state";
+    String EXTRA_OAUTH_CODE = "oauth_code";
+
+    String EXTRA_ERROR_CODE = "oauth_error_code";
+    String EXTRA_ERROR_DESCRIPTION = "oauth_error_desc";
 
     String PARAM_VALUE_AUTH = "authorization_code";
     String PARAM_VALUE_REFRESH = "authorization_code";
-
 
     String PARAM_KEY_STATE = "state";
     String PARAM_APP_TYPE = "app_type";
@@ -51,7 +62,6 @@ public interface OAuthPresenter {
     void responseCodeAndRequest();
     void getAccessToken();
 
-    String generateState();
 
 
 }

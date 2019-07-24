@@ -17,6 +17,7 @@ public interface Constant {
     String PARAM_KEY_CLIENT_SECRET = "client_secret";
     String PARAM_KEY_REDIRECT_URI = "redirect_uri";
     String PARAM_KEY_GRANT_TYPE = "grant_type";
+    String PARAM_KEY_RESPONSE_TYPE = "response_type";
 
     String PARAM_KEY_CODE = "authorization_code";
     String PARAM_STATE_CODE = "state";
@@ -24,7 +25,7 @@ public interface Constant {
 
 
     String PARAM_VALUE_AUTH = "authorization_code";
-    String PARAM_VALUE_REFRESH = "authorization_code";
+    String PARAM_VALUE_RESPONSE_CODE = "code";
 
 
     String PARAM_KEY_STATE = "state";
