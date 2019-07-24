@@ -1,6 +1,8 @@
 package com.dreamsecurity.oauth.custom;
 
 import android.content.Intent;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 public interface OAuthPresenter {
 
@@ -20,10 +22,31 @@ public interface OAuthPresenter {
     String INTENT_KEY_AGREE_FORM_CONTENT= "agree_form_content";
     String INTENT_KEY_OAUTH_URL= "oauth";
 
+    String EXTRA_KEY_CODE = "code";
+    String EXTRA_KEY_STATE = INTENT_KEY_STATE;
+    String EXTRA_KEY_ERROR = "error";
+    String EXTRA_KEY_ERROR_DESCRIPTION = "error_des";
+    String PARAM_LOCALE_CODE = "locale";
+
+
+    String PARAM_VALUE_AUTH = "authorization_code";
+    String PARAM_VALUE_REFRESH = "authorization_code";
+
+
+    String PARAM_KEY_STATE = "state";
+    String PARAM_APP_TYPE = "app_type";
+    String PARAM_NETWORK = "network";
+    String PARAM_OS = "oauth_os";
+    String PARAM_VERSION = "version";
+
+
+
 
     String makeLoginParameter(Intent getIntent);
     void requestLoginPage(String url);
     void requestLoginPage(Intent getIntent);
+
+    void returnResult(@NonNull Intent data);
 
     void responseCodeAndRequest();
     void getAccessToken();

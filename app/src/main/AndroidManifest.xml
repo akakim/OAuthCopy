@@ -9,7 +9,18 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".custom.OAuthCustomTabActivity">
+        <activity android:name=".custom.OAuthCustomTabActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:configChanges="orientation|screenSize"
+                  android:screenOrientation="portrait"
+                  android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <!-- Intent URL 에서 로그인 액티비티를 실행하기 위해 설정 -->
+                <data android:scheme="dreamtestlogin" android:path="/" android:host="authorize"/>
+            </intent-filter>
         </activity>
         <activity android:name=".custom.WebviewActivity">
         </activity>

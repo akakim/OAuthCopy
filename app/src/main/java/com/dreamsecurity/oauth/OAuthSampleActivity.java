@@ -2,22 +2,17 @@ package com.dreamsecurity.oauth;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-/*import com.dreamsecurity.ssooauth.common.connect.CommonConnect;
-import com.dreamsecurity.ssooauth.common.connect.ResponseData;
-import com.dreamsecurity.ssooauth.common.logger.Logger;
-import com.dreamsecurity.ssooauth.magiclogin.OAuthLogin;
-import com.dreamsecurity.ssooauth.magiclogin.OAuthLoginConnection;
-import com.dreamsecurity.ssooauth.magiclogin.OAuthLoginHandler;
-import com.dreamsecurity.ssooauth.magiclogin.data.OAuthErrorCode;
-import com.dreamsecurity.ssooauth.magiclogin.data.OAuthLoginPreferenceManager;
-import com.dreamsecurity.ssooauth.magiclogin.data.OAuthResponse;
-import com.dreamsecurity.ssooauth.magiclogin.ui.OAuthDialog;
-import com.dreamsecurity.ssooauth.magiclogin.ui.OAuthLoginActivity;*/
+import com.dreamsecurity.oauth.custom.OAuthCustomTabActivity;
+import com.dreamsecurity.oauth.custom.OAuthPresenter;
+import com.dreamsecurity.oauth.custom.common.Constant;
+
 
 public class OAuthSampleActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -47,11 +42,18 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
         findViewById( R.id.btnLogout).setOnClickListener( this );
         findViewById( R.id.btnRefresh).setOnClickListener( this );
         findViewById( R.id.btnCustomChromeTab).setOnClickListener( this );
+        findViewById( R.id.btnAuthorizationAcv).setOnClickListener( this );
+
         tvAccessToken = findViewById( R.id.tvAccessToken);
         tvRefreshToken = findViewById( R.id.tvRefreshToken);
         tvExpired = findViewById( R.id.tvExpires );
 
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme( "naver3rdpartylogin");
+        builder.authority("authorize");
+        builder.appendPath("/");
 
+        Log.d(TAG,"get Uri " + builder.toString());
 /*btnCustomChromeTab
         OAuthLoginInstance = OAuthLogin.getInstance();
         OAuthLoginInstance.showDevLog( true );
@@ -79,6 +81,20 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.btnCustomChromeTab:
                 startActivity( new Intent( this , CustomTabBrowserActivity.class ));
+                break;
+            case R.id.btnAuthorizationAcv:
+
+
+                Intent oauthIntent = new Intent(this,OAuthCustomTabActivity.class );
+
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6");
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_SECRET, "ALnxTUqecvZkmBhTQTPOOzr4W4cTlL4k-1TSLrvm4sNgxeN1SYHWakmODgouraM6BnJrj9LT0as6g6cjlSzClyM");
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, "dreamTestlogin://authorize/");
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_STATE, "111");
+                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_OAUTH_SDK_VERSION, BuildConfig.VERSION_NAME);
+//                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_RESPONSE_TYPE, BuildConfig.VERSION_NAME);
+
+                startActivity( oauthIntent );
                 break;
         }
     }

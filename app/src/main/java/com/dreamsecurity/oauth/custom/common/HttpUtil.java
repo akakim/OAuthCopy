@@ -1,6 +1,9 @@
 package com.dreamsecurity.oauth.custom.common;
 
+import android.text.TextUtils;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,13 +52,33 @@ public class HttpUtil {
         return query.toString();
     }
 
+    public static String getDecodedString(String oriStr) {
+
+        if (TextUtils.isEmpty(oriStr)) {
+            return oriStr;
+        }
+
+        String decodedStr = "";
+        try {
+            decodedStr = URLDecoder.decode(oriStr, "UTF-8");
+        } catch (Exception e) {
+            // do nothing
+        }
+        if (!TextUtils.isEmpty(decodedStr)
+                && !decodedStr.equalsIgnoreCase(oriStr)) {
+            return decodedStr;
+        }
+        return oriStr;
+    }
+
+
     public static String generateRequestWebVIewAuthURL(String clientID ,String network,String callbackURL,String version){
 
         return generateRequestAuthorizationURL(clientID,"web_view",network,callbackURL,version);
 
     }
 
-    public static String generateRequestCustmTabAuthURL(String clientID ,String network,String callbackURL,String version){
+    public static String generateRequestCustomTabAuthURL(String clientID , String network, String callbackURL, String version){
         return generateRequestAuthorizationURL(clientID,"custom_tab",network,callbackURL,version);
     }
 
@@ -65,7 +88,7 @@ public class HttpUtil {
 
         resultMap.put( Constant.PARAM_KEY_CLIENT_ID , clientID);
         resultMap.put( Constant.PARAM_KEY_REDIRECT_URI , callbackURL );
-        resultMap.put( Constant.PARAM_KEY_GRANT_TYPE , callbackURL );
+        resultMap.put( Constant.PARAM_KEY_GRANT_TYPE , Constant.PARAM_KEY_CODE );
 
         /* 아래의 3 값은 oauth 규격 외 인자값들 . */
         resultMap.put( Constant.PARAM_NETWORK , network);

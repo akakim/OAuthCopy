@@ -1,17 +1,20 @@
 package com.dreamsecurity.oauth.custom;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.dreamsecurity.oauth.custom.common.HttpUtil;
-import com.dreamsecurity.ssooauth.common.logger.Logger;
+import com.dreamsecurity.oauth.custom.common.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -29,9 +32,11 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
     private Context context;
     private OAuthCallback oAuthCallback;
 
+    private List<PackageInfo> packageInfos;
     public CustomTabOAuthPresenter(Context context,OAuthCallback oAuthCallback) {
         this.context = context;
         this.oAuthCallback = oAuthCallback;
+        this.packageInfos = getCustomTabsPackages( context);
     }
 
     public static  List<PackageInfo> getCustomTabsPackages(Context context){
@@ -77,7 +82,7 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
             oauthParam.getStringExtra( INTENT_KEY_STATE );
 
 
-            return HttpUtil.generateRequestCustmTabAuthURL(
+            return HttpUtil.generateRequestCustomTabAuthURL(
                     oauthParam.getStringExtra( INTENT_KEY_CLIENT_ID ),
                     "4G",
                     oauthParam.getStringExtra( INTENT_KEY_REDIRECT_URI),
@@ -90,12 +95,20 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
 
     @Override
     public void requestLoginPage(String url) {
-        List<PackageInfo> customTabsPackages = getCustomTabsPackages( this.context );
+        //List<PackageInfo> customTabsPackages = getCustomTabsPackages( this.context );
 
-        if( customTabsPackages.size() == 1 ){
-            launchUrl( customTabsPackages.get(0).packageName,url);
-            return;
+        Logger.d( getClass().getSimpleName(), "request Login Page : " + url );
+        if( packageInfos.size() == 1 ){
+            launchUrl( packageInfos.get(0).packageName,url);
+
         }
+
+        if( oAuthCallback != null ) {
+            oAuthCallback.onProgress(Uri.parse( url ));
+        }else {
+            Log.e(getClass().getSimpleName(), " requestLoginPage 시점에 oauthCallback이 널입니다. ");
+        }
+
 
         //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -105,7 +118,12 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
     @Override
     public void requestLoginPage(Intent getIntent) {
 
-        requestLoginPage( makeLoginParameter( getIntent ));
+        requestLoginPage( makeLoginParameter( getIntent ) );
+    }
+
+    @Override
+    public void returnResult(@NonNull Intent data) {
+
     }
 
     @Override
@@ -144,7 +162,55 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
 
         customTabsIntent.intent.setPackage(packageName);
 
+        Logger.d( getClass().getSimpleName(), " launch URL "  + Uri.parse(url).toString() );
         customTabsIntent.launchUrl( context, Uri.parse(url) );
 
+    }
+
+    /**
+     *  커스텀 탭의 결과를 리턴한다.
+     *  코드를 호출한다. ( 1회성임 )
+     *
+     * @param intent
+     */
+    public void sendResult( Intent intent ){
+        intent.setAction(ACTION_DREAM_CUSTOM_TAB);
+        intent.setClass(this.context, CustomTabOAuthPresenter.class);
+        LocalBroadcastManager instance = LocalBroadcastManager.getInstance( this.context );
+        instance.sendBroadcast(intent);
+    }
+
+    /**
+     * 커스텀 탭 리스너를 지정합니다.<br />
+     * 리스너는 <b>일회용</b>입니다. 사용에 주의하세요.
+     *
+     * @param listener 실행될 리스너 결과 값은 {@link Intent}로 주고 받습니다
+     */
+    public void setCustomTabListener(final CustomTabsListener listener) {
+        final LocalBroadcastManager instance = LocalBroadcastManager.getInstance(context);
+
+        instance.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                listener.onReceive(intent);
+                instance.unregisterReceiver(this);
+            }
+        }, new IntentFilter(ACTION_DREAM_CUSTOM_TAB));
+    }
+
+    /**
+     * 커스텀 탭의 결과 값을 리턴
+     *
+     * @param intent 리턴 값
+     */
+    public void sendCustomTabResult(Intent intent) {
+        intent.setAction(ACTION_DREAM_CUSTOM_TAB);
+        intent.setClass(context, CustomTabOAuthPresenter.class);
+        LocalBroadcastManager instance = LocalBroadcastManager.getInstance(context);
+        instance.sendBroadcast(intent);
+    }
+
+    public List<PackageInfo> getPackageInfos() {
+        return packageInfos;
     }
 }

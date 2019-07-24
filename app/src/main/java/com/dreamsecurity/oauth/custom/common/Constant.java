@@ -18,7 +18,7 @@ public interface Constant {
     String PARAM_KEY_REDIRECT_URI = "redirect_uri";
     String PARAM_KEY_GRANT_TYPE = "grant_type";
 
-    String PARAM_KEY_CODE = "code";
+    String PARAM_KEY_CODE = "authorization_code";
     String PARAM_STATE_CODE = "state";
     String PARAM_LOCALE_CODE = "locale";
 
