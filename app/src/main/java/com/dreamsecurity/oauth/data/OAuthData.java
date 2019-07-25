@@ -12,7 +12,7 @@ public class OAuthData {
 
     private String inClientId;
     private String inClientSecret;
-    private String inRedirectURIk;
+    private String inRedirectURI;
     private String inState;
 
     private String 			currentState;
@@ -26,10 +26,10 @@ public class OAuthData {
         this ( inClientId, inClientSecret,inRedirectURIk, null);
     }
 
-    public OAuthData(String inClientId, String inClientSecret, String inRedirectURIk, String inState) {
+    public OAuthData(String inClientId, String inClientSecret, String inRedirectURI, String inState) {
         this.inClientId = inClientId;
         this.inClientSecret = inClientSecret;
-        this.inRedirectURIk = inRedirectURIk;
+        this.inRedirectURI = inRedirectURI;
         this.inState = inState;
     }
 

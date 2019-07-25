@@ -1,7 +1,9 @@
 package com.dreamsecurity.oauth.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import com.dreamsecurity.oauth.custom.OAuthPresenter;
 import com.dreamsecurity.oauth.custom.common.Logger;
 import com.dreamsecurity.oauth.custom.common.OAuthErrorCode;
 import com.dreamsecurity.oauth.custom.common.OAuthLoginPreferManager;
+import com.dreamsecurity.oauth.data.OAuthorizedResponse;
+
 
 public class OAuthLoginActivity extends AppCompatActivity {
 
@@ -18,7 +22,7 @@ public class OAuthLoginActivity extends AppCompatActivity {
     private static int REQUESTCODE_LOGIN = 100;
     private static int CUSTOMTAB_LOGIN = -1;
 
-    // dialog
+    // dialog TODO : Deprecate 된거 수정하기.
     //private OAuthLoginDialogMng mDialogMng = new OAuthLoginDialogMng();
 
 
@@ -70,21 +74,24 @@ public class OAuthLoginActivity extends AppCompatActivity {
 //        Logger.d( TAG,"client_id" + clientId );
 
         mClientName = opm.getClientName();
-        finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTID);
-        return false;
+
+        if( TextUtils.isEmpty( clientId )) {
+            finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTID);
+            return false;
+        }
 
         if (TextUtils.isEmpty(clientSecret)) {
-        finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTSECRET);
-        return false;
-    }
+            finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTSECRET);
+            return false;
+        }
         if (TextUtils.isEmpty(mClientName)) {
-        finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTNAME);
-        return false;
-    }
+            finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CLIENTNAME);
+            return false;
+        }
         if (TextUtils.isEmpty(callbackUrl)) {
-        finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CALLBACKURL);
-        return false;
-    }
+            finishWithErrorResult(OAuthErrorCode.CLIENT_ERROR_NO_CALLBACKURL);
+            return false;
+        }
 
         //mOAuthLoginData = new OAuthLoginData(clientId, clientSecret, callbackUrl, state);
 
@@ -102,9 +109,36 @@ public class OAuthLoginActivity extends AppCompatActivity {
         prefMng.setLastErrorCode(code);
         prefMng.setLastErrorDesc(code.getDesc());
 
-        intent.putExtra(OAuthPresnter.EXTRA_OAUTH_ERROR_CODE, code.getCode());
-        intent.putExtra(OAuthPresnter.EXTRA_OAUTH_ERROR_DESCRIPTION, code.getDesc());
+        intent.putExtra(OAuthPresenter.EXTRA_ERROR_CODE, code.getCode());
+        intent.putExtra(OAuthPresenter.EXTRA_ERROR_DESCRIPTION, code.getDesc());
     }
 
-    private class GetAccessTokenTask extends AsyncTask<Void,Void,OAuthResponse>
+    private class GetAccessTokenTask extends AsyncTask<Void,Void, OAuthorizedResponse> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Logger.d(getClass().getSimpleName(), " onPreExecuted"); // TODO: UI 효과 추가.
+        }
+
+        @Override
+        protected OAuthorizedResponse doInBackground(Void... voids) {
+            try {
+                return OAuthLoginConnection.requestAccessToken(mContext,
+                        mOAuthLoginData.getClientId(),
+                        mOAuthLoginData.getClientSecret(),
+                        mOAuthLoginData.getState(), mOAuthLoginData.getCode());
+            } catch (Exception e) {
+                return new OAuthResponse(OAuthErrorCode.CLIENT_ERROR_CONNECTION_ERROR);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(OAuthorizedResponse oAuthorizedResponse) {
+            super.onPostExecute(oAuthorizedResponse);
+
+            Logger.d(getClass().getSimpleName(), " onPostExecuted");
+        }
+    }
 }
