@@ -35,8 +35,8 @@ public interface OAuthPresenter extends Constant {
 
     String EXTRA_EXPIRES_IN = "expires_in";
     String EXTRA_TOKEN_TYPE = "token_type";
-    String EXTRA_OAUTH_STATE = "oauth_state";
-    String EXTRA_OAUTH_CODE = "oauth_code";
+    String EXTRA_OAUTH_STATE = "state";
+    String EXTRA_OAUTH_CODE = "code";
 
     String EXTRA_ERROR_CODE = "oauth_error_code";
     String EXTRA_ERROR_DESCRIPTION = "oauth_error_desc";

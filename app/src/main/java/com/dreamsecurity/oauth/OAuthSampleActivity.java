@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.dreamsecurity.oauth.activity.OAuthCustomTabActivity;
+import com.dreamsecurity.oauth.activity.OAuthLoginActivity;
 import com.dreamsecurity.oauth.custom.OAuthPresenter;
 
 
@@ -63,6 +65,12 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
     protected void onResume() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         super.onResume();
@@ -79,12 +87,12 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnRefresh:
                 break;
             case R.id.btnCustomChromeTab:
-                startActivity( new Intent( this , CustomTabBrowserActivity.class ));
+              //  startActivity( new Intent( this , OAuthLoginActivity.class ));
                 break;
             case R.id.btnAuthorizationAcv:
 
 
-                Intent oauthIntent = new Intent(this,OAuthCustomTabActivity.class );
+                Intent oauthIntent = new Intent(this,OAuthLoginActivity.class );
 
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6");
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_SECRET, "ALnxTUqecvZkmBhTQTPOOzr4W4cTlL4k-1TSLrvm4sNgxeN1SYHWakmODgouraM6BnJrj9LT0as6g6cjlSzClyM");

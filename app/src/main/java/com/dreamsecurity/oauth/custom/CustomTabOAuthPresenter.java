@@ -13,13 +13,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import com.dreamsecurity.oauth.custom.common.HttpUtil;
+import com.dreamsecurity.oauth.custom.util.HttpUtil;
 import com.dreamsecurity.oauth.custom.common.Logger;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.net.URLEncoder;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +27,13 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
 
     private Context context;
     private OAuthCallback oAuthCallback;
+    public static boolean CUSTOM_TAB_REQUIRED_RE_AUTH = false;
 
     private List<PackageInfo> packageInfos;
     public CustomTabOAuthPresenter(Context context,OAuthCallback oAuthCallback) {
+
+        Logger.d(context.getClass().getSimpleName(), " init Custom TabOAuth Presenter ");
+
         this.context = context;
         this.oAuthCallback = oAuthCallback;
         this.packageInfos = getCustomTabsPackages( context);
@@ -69,6 +69,20 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
         }
         return packagesSupportingCustomTabs;
     }
+
+
+    /**
+     * 커스텀 탭을 사용할 수 있는지 확인한다.
+     *
+     * @return 사용가능한 커스텀탭 패키지가 있거나 크롬이 설치되어 있으며,
+     * 현재 안드로이드 버전이 커스텀탭 지원 버전보다 높을 경우 true 아니면 false
+     */
+    public static boolean isCustomTabAvailable(Context context) {
+        List<PackageInfo> customTabsPackages = getCustomTabsPackages(context);
+        return customTabsPackages != null && customTabsPackages.size() > 0;
+//		return true;
+    }
+
 
     @Override
     public String makeLoginParameter(Intent oauthParam) {
@@ -179,6 +193,8 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
         instance.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Logger.d(context.getClass().getSimpleName(), "  onCutomTab Presenter Receive.... ");
+
                 listener.onReceive(intent);
                 instance.unregisterReceiver(this);
             }

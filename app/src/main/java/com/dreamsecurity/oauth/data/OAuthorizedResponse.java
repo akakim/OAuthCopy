@@ -1,7 +1,11 @@
 package com.dreamsecurity.oauth.data;
 
+import android.text.TextUtils;
+import com.dreamsecurity.oauth.custom.common.NetworkStatus;
 import com.dreamsecurity.oauth.custom.common.OAuthErrorCode;
 
+import java.io.*;
+import java.util.List;
 import java.util.Map;
 
 public class OAuthorizedResponse {
@@ -17,10 +21,18 @@ public class OAuthorizedResponse {
     private OAuthErrorCode errorCode;
     private String errorDescription;
 
+    NetworkStatus status;
+    String msg;
 
     public OAuthorizedResponse(){
 
     }
+
+    public OAuthorizedResponse(OAuthErrorCode code){
+        this.errorCode = code ;
+    }
+
+
     // ret 에서 값을 추출하여 위 값들을 정해줌
     public OAuthorizedResponse(Map<String, String> ret) {
 
@@ -47,7 +59,7 @@ public class OAuthorizedResponse {
         return accessToken;
     }
 
-    public Long getExpiredIn() {
+    public Long getExpiresIn() {
         return expiredIn;
     }
 
@@ -75,6 +87,7 @@ public class OAuthorizedResponse {
         this.accessToken = accessToken;
     }
 
+
     public void setExpiredIn(Long expiredIn) {
         this.expiredIn = expiredIn;
     }
@@ -93,5 +106,30 @@ public class OAuthorizedResponse {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
+    }
+
+    public void setResultCode(NetworkStatus stat, String msg) {
+        this.status = stat;
+        this.msg = msg;
+    }
+
+    public NetworkStatus getStatus() {
+        return status;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public boolean isSuccess(){
+        if(TextUtils.isEmpty(errorCode.getCode())){
+
+            if( TextUtils.isEmpty(accessToken)){
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

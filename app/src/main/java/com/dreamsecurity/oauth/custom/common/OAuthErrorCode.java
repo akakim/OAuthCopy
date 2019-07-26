@@ -22,8 +22,8 @@ public enum OAuthErrorCode {
     CLIENT_ERROR_CONNECTION_ERROR ("server_error", "connection_error"),
     CLIENT_ERROR_CERTIFICATION_ERROR ("server_error", "certification_error"),
     CLIENT_USER_CANCEL ("user_cancel", "user_cancel"),
-    ACTIVITY_IS_SINGLE_TASK("activity_is_single_task", "activity_is_single_task"),
-    SUCCESS				("SUCCESS", 		null),
+    ACTIVITY_IS_SINGLE_TASK("activity_is_single_task", "activity_is_single_task");
+    /*SUCCESS				("SUCCESS", 		null),
     CLIENT_ACTION_BUSY				("BUSY", 			"BUSY"),			// http client 가 사용중
     CLIENT_ACTION_CANCEL				("CANCEL", 			"CANCEL"),	  		// 그외의 Exception 발생으로 실패
     CLIENT_ACTION_URL_ERROR			("URL_ERROR", 		"URL_ERROR"),			// url 이 이상한 경우
@@ -32,7 +32,7 @@ public enum OAuthErrorCode {
     CLIENT_ACTION_IO_FAIL ("IO_EXCEPTION","IO_EXCEPTION"),
     CLIENT_ACTION_EXCEPTION_FAIL		("EXCEPTION_FAIL", 	"EXCEPTION_FAIL"),	  		// 그외의 Exception 발생으로 실패
     CLIENT_ACTION_NO_PEER_CERTIFICATE	("NO_PEER_CERTIFICATE", "NO_PEER_CERTIFICATE"),		// 인증서오류
-    FAIL				("FAIL", 			"FAIL");	  		// 그외의 실패
+    FAIL				("FAIL", 			"FAIL");	  		// 그외의 실패*/
 
     private String mCode;
     private String mDesc;

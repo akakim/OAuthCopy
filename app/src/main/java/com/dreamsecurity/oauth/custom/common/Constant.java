@@ -34,5 +34,26 @@ public interface Constant {
     String PARAM_OS = "oauth_os";
     String PARAM_VERSION = "version";
 
+    /**
+     * 사용자가 수정 가능한 값들
+     */
+    // 네이버앱이 없거나 업그레이드가 필요한 경우 네이버앱에 대한 market link 팝업을 띄울것인지 여부
+    public static boolean		MARKET_LINK_WORKING = true;
 
+    // 닫기 버튼 등이 들어가 있는 하단 탭의 노출 유무
+    public static boolean		BOTTOM_TAB_WORKING = true;
+
+
+    // 로그인을 webview 혹은 네이버앱 통해서 할 수 있는데 true 로 설정하면 webview 로만 로그인하게 됨.
+    boolean		LOGIN_BY_NAVERAPP_ONLY = false;
+
+    // 로그인을 webview 혹은 네이버앱 통해서 할 수 있는데 true 로 설정하면 webview 로만 로그인하게 됨.
+    boolean		LOGIN_BY_CUSTOM_TAB_ONLY = true;
+
+    // 로그인을 webview 혹은 네이버앱 통해서 할 수 있는데 true 로 설정하면 webview 로만 로그인하게 됨.
+    boolean		LOGIN_BY_WEBVIEW_ONLY = false;
+    // network timeout
+    int 			TIMEOUT = 10000;
+
+    boolean CUSTOM_TAB_REQUIRED_RE_AUTH = false;
 }

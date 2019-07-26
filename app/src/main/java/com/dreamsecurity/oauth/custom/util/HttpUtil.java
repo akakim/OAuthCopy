@@ -1,11 +1,14 @@
-package com.dreamsecurity.oauth.custom.common;
+package com.dreamsecurity.oauth.custom.util;
 
 import android.text.TextUtils;
+import com.dreamsecurity.oauth.custom.common.Constant;
+import com.dreamsecurity.oauth.custom.common.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +17,42 @@ import java.util.Set;
  */
 public class HttpUtil {
 
+    static final String TAG = "HttpUtil";
+    /**
+     * getting-charset from content-type of http-response-header.
+     */
+    public static String getCharsetFromContentTypeHeader(Map<String, List<String>> headerMap) {
+        String rt = "utf-8";
+
+        for( String key : headerMap.keySet() ){
+            if ("Content-Type".equalsIgnoreCase(key))	{
+                List<String> headerList = headerMap.get(key);
+
+                for (String contentType : headerList) {
+
+                    String[] elems = contentType.split(";");
+
+                    if (null != elems) {
+                        for (String elem : elems) {
+                            if (elem.contains("charset")) {
+                                String[] elems2 = elem.split("=");
+                                if (null != elems2 && elems2[1].length() > 2) {
+                                    rt = elems2[1];
+                                }
+                            }
+                        }
+                    }
+
+                    if (!Logger.isRealVersion()) {
+                        Logger.i(TAG, "encoding type from response : " + rt);
+                    }
+
+                }
+            }
+        }
+
+        return rt;
+    }
     private static String percentEncode(String s) throws UnsupportedEncodingException {
         if (s == null) {
             return "";

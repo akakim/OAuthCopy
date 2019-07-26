@@ -1,10 +1,9 @@
-package com.dreamsecurity.oauth.custom;
+package com.dreamsecurity.oauth.custom.common;
 
 import android.content.Context;
-import com.dreamsecurity.oauth.custom.common.Logger;
-import com.dreamsecurity.oauth.custom.common.NetworkStatus;
-import com.dreamsecurity.oauth.custom.common.OAuthErrorCode;
-import com.dreamsecurity.oauth.data.OAuthorizedResponse;
+import com.dreamsecurity.oauth.custom.util.HttpUtil;
+import com.dreamsecurity.oauth.custom.util.AppUtil;
+import com.dreamsecurity.oauth.data.HttpResponse;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -17,7 +16,7 @@ public class CommonConnection {
 
     private static final String TAG = "CommonConnection";
 
-    protected static HttpURLConnection mHttpUrlConnection = null;
+    protected static HttpURLConnection httpUrlConnection = null;
 
     // when user-cancel, this is set.
     protected static boolean mCancel;
@@ -33,32 +32,33 @@ public class CommonConnection {
      * @param userAgent useragent
      * @return : url request 로 얻은 response data를 리턴. response data는 content 와 status-code, cookie 로 구성됨
      */
-    public static OAuthorizedResponse request(Context context, String strRequestUrl, String cookies, String userAgent) {
+    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent) {
         return request(context, strRequestUrl, cookies, userAgent, false);
     }
 
 
-    public static OAuthorizedResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader) {
+    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader) {
         return request(context, strRequestUrl, cookies, userAgent, authHeader, false, TIMEOUT);
     }
 
-    public static OAuthorizedResponse request(Context context, String strRequestUrl, String cookies, String userAgent, boolean httpClientIsolated) {
+    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, boolean httpClientIsolated) {
         return request(context, strRequestUrl, cookies, userAgent, null, httpClientIsolated, TIMEOUT);
     }
 
-    public static OAuthorizedResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated) {
+    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated) {
         return request(context, strRequestUrl, cookies, userAgent, authHeader, httpClientIsolated, TIMEOUT);
     }
 
     /*
      * get 방식의 login 관련 request 를 해주는 메쏘드
      */
-    public static OAuthorizedResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated, int timeout) {
+    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated, int timeout) {
 
-        OAuthorizedResponse res = new OAuthorizedResponse();
+        HttpResponse res = new HttpResponse();
+      //  HttpResponse httpRes= new HttpResponse();
         List<String> postCookies = new ArrayList<String>();
 
-        HttpsURLConnection httpClient = null;
+        HttpsURLConnection securityHttpClient = null;
         // get 방식은 output 없음
         //OutputStream outputStream = null;
 
@@ -67,8 +67,8 @@ public class CommonConnection {
             if (httpClientIsolated) {
 
             } else {
-                if (mHttpUrlConnection != null) {
-                    res.setErrorCode(OAuthErrorCode.CLIENT_ACTION_BUSY);
+                if (httpUrlConnection != null) {
+                    res.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_BUSY);
                     return res;
                 }
             }
@@ -78,7 +78,7 @@ public class CommonConnection {
             }
 
             if (strRequestUrl == null || strRequestUrl.length() == 0) {
-                res.setErrorCode( , "strRequestUrl is null");
+                res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_URL_ERROR);
                 return res;
             }
 
@@ -87,27 +87,27 @@ public class CommonConnection {
                 // HttpClient 설정
                 if (httpClientIsolated) {
                     if (userAgent != null && userAgent.length() > 0) {
-                        httpClient = getDefaultHttpsConnection("GET", strRequestUrl, userAgent, timeout);
+                        securityHttpClient = getDefaultHttpsConnection("POST", strRequestUrl, userAgent, timeout);
                     } else {
-                        httpClient = getDefaultHttpsConnection("GET", strRequestUrl, context, timeout);
+                        securityHttpClient = getDefaultHttpsConnection("GET", strRequestUrl, context, timeout);
                     }
                 } else {
                     if (userAgent != null && userAgent.length() > 0) {
-                        mHttpUrlConnection = getDefaultHttpsConnection("GET", strRequestUrl, userAgent, timeout);
+                        httpUrlConnection = getDefaultHttpConnection("POST", strRequestUrl, userAgent, timeout);
                     } else {
-                        mHttpUrlConnection = getDefaultHttpsConnection("GET", strRequestUrl, context, timeout);
+                        httpUrlConnection = getDefaultHttpConnection("GET", strRequestUrl, context, timeout);
                     }
                 }
             } catch (MalformedURLException e) {
-                res.setErrorCode(OAuthErrorCode.CLIENT_ACTION_URL_ERROR);
+                res.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_URL_ERROR);
                 e.printStackTrace();
                 return res;
             } catch (IOException e) {
-                res.setErrorCode(OAuthErrorCode.CLIENT_ACTION_CONNECTION_FAIL);
+                res.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_CONNECTION_FAIL);
                 e.printStackTrace();
                 return res;
             } catch (Exception e) {
-                res.setErrorCode(OAuthErrorCode.CLIENT_ACTION_EXCEPTION_FAIL);
+                res.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_EXCEPTION_FAIL);
                 Logger.e(TAG, "exception step : connection establishing");
                 e.printStackTrace();
                 return res;
@@ -133,109 +133,110 @@ public class CommonConnection {
         try {
             if (httpClientIsolated) {
                 if (null != cookies && cookies.length() > 0) {
-                    httpClient.setRequestProperty("Cookie", cookies);
+                    securityHttpClient.setRequestProperty("Cookie", cookies);
                 }
                 if (null != authHeader && authHeader.length() > 0) {
-                    httpClient.setRequestProperty("Authorization", authHeader);
+                    securityHttpClient.setRequestProperty("Authorization", authHeader);
                 }
 
-                int responseCode = httpClient.getResponseCode();
+                int responseCode = securityHttpClient.getResponseCode();
                 Logger.i(TAG, "response status code:" + responseCode);
 
-                postCookies = CookieUtil.getCookieUpperSDK23(httpClient.getHeaderFields());
-                String contentType = HttpConnectionUtil.getCharsetFromContentTypeHeader(httpClient.getHeaderFields());
+               // postCookies = CookieUtil.getCookieUpperSDK23(httpClient.getHeaderFields());
+                String contentType = HttpUtil.getCharsetFromContentTypeHeader(securityHttpClient.getHeaderFields());
 
                 InputStream in = null;
                 try {
-                    in = httpClient.getInputStream();
+                    in = securityHttpClient.getInputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    in = httpClient.getErrorStream();
+                    in = securityHttpClient.getErrorStream();
                 }
 
                 res.setResponseData(responseCode, contentType, in, postCookies);
 
             } else {
                 if (null != cookies && cookies.length() > 0) {
-                    mHttpUrlConnection.setRequestProperty("Cookie", cookies);
+                    httpUrlConnection.setRequestProperty("Cookie", cookies);
                 }
                 if (null != authHeader && authHeader.length() > 0) {
-                    mHttpUrlConnection.setRequestProperty("Authorization", authHeader);
+                    httpUrlConnection.setRequestProperty("Authorization", authHeader);
                 }
 
-                int responseCode = mHttpUrlConnection.getResponseCode();
+                int responseCode = httpUrlConnection.getResponseCode();
                 Logger.i(TAG, "response status code:" + responseCode);
 
-                postCookies = CookieUtil.getCookieUpperSDK23(mHttpUrlConnection.getHeaderFields());
-                String contentType = HttpConnectionUtil.getCharsetFromContentTypeHeader(mHttpUrlConnection.getHeaderFields());
+               // postCookies = CookieUtil.getCookieUpperSDK23(httpUrlConnection.getHeaderFields());
+                String contentType = HttpUtil.getCharsetFromContentTypeHeader(httpUrlConnection.getHeaderFields());
 
                 InputStream in = null;
                 try {
-                    in = mHttpUrlConnection.getInputStream();
+                    in = httpUrlConnection.getInputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    in = mHttpUrlConnection.getErrorStream();
+                    in = httpUrlConnection.getErrorStream();
                 }
 
                 res.setResponseData(responseCode, contentType, in, postCookies);
             }
         } catch (SSLPeerUnverifiedException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_NO_PEER_CERTIFICATE );
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_NO_PEER_CERTIFICATE );
             e.printStackTrace();
         } catch (SSLProtocolException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_NO_PEER_CERTIFICATE);
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_NO_PEER_CERTIFICATE);
             e.printStackTrace();
         } catch (SSLKeyException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_NO_PEER_CERTIFICATE);
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_NO_PEER_CERTIFICATE);
             e.printStackTrace();
         } catch (SSLHandshakeException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_NO_PEER_CERTIFICATE);
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_NO_PEER_CERTIFICATE);
             e.printStackTrace();
         } catch (SSLException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_NO_PEER_CERTIFICATE );
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_NO_PEER_CERTIFICATE );
             e.printStackTrace();
         } catch (SocketTimeoutException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_CONNECTION_TIMEOUT);
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_CONNECTION_TIMEOUT);
             e.printStackTrace();
         } catch (SocketException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_CONNECTION_FAIL );
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_CONNECTION_FAIL );
             e.printStackTrace();
         } catch (IOException e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_IO_FAIL);
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_IO_FAIL);
             e.printStackTrace();
         } catch (Exception e) {
-            res.setErrorCode( OAuthErrorCode.CLIENT_ACTION_EXCEPTION_FAIL );
+            res.setResultCode( HttpResponse.ResponseDataStat.CLIENT_ACTION_EXCEPTION_FAIL );
             e.printStackTrace();
         }
 
         try {
             if (httpClientIsolated) {
-                httpClient.disconnect();
+                securityHttpClient.disconnect();
             } else {
-                mHttpUrlConnection.disconnect();
+                httpUrlConnection.disconnect();
             }
         } catch (Exception e) {
             Logger.write(e);
         } finally {
             if (httpClientIsolated) {
-                httpClient = null;
+                securityHttpClient = null;
             } else {
-                mHttpUrlConnection = null;
+                httpUrlConnection = null;
             }
         }
 
-        if (mCancel) {
-            ResponseData cc = new ResponseData();
-            cc.setResultCode(ResponseData.ResponseDataStat.CANCEL, "User cancel");
+        if ( mCancel ) {
+            HttpResponse cc = new HttpResponse();
+            cc.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_CANCEL);
             return cc;
         }
 
+        /*
         try {
             CookieUtil.setCookie(strRequestUrl, postCookies);
         } catch (Exception e) {
             res.setResultCode(ResponseData.ResponseDataStat.FAIL, "setCookie() failed :" + e.getMessage());
             Logger.write(e);
-        }
+        }*/
         return res;
     }
 
@@ -245,7 +246,7 @@ public class CommonConnection {
      * @throws MalformedURLException
      */
     public static HttpsURLConnection getDefaultHttpsConnection(String method, String url, Context context, int timeout) throws MalformedURLException, IOException {
-        String useragent = DeviceAppInfo.getUserAgent(context);
+        String useragent = AppUtil.getUserAgent(context);
         return getDefaultHttpsConnection(method, url, useragent, timeout);
     }
 
@@ -254,7 +255,7 @@ public class CommonConnection {
     }
 
     public static HttpURLConnection getDefaultHttpConnection(String method, String url, Context context, int timeout) throws MalformedURLException, IOException {
-        String useragent = DeviceAppInfo.getUserAgent(context);
+        String useragent = AppUtil.getUserAgent(context);
         return getDefaultHttpConnection(method, url, useragent, timeout);
     }
 
@@ -282,17 +283,17 @@ public class CommonConnection {
         return urlConn;
     }
     public static boolean isBusy() {
-        if (mHttpUrlConnection != null)
+        if (httpUrlConnection != null)
             return true;
         return false;
     }
 
     public static void cancel() {
         mCancel = true;
-        if (mHttpUrlConnection != null) {
+        if (httpUrlConnection != null) {
             Logger.e(TAG, "cancel() https-connection shutdown");
-            mHttpUrlConnection.disconnect();
-            mHttpUrlConnection = null;
+            httpUrlConnection.disconnect();
+            httpUrlConnection = null;
         }
         // executor 는 cancel 안해줌 -> 동작이 복잡해짐
     }

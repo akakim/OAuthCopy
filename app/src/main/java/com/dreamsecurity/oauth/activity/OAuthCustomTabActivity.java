@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dreamsecurity.oauth.R;
 import com.dreamsecurity.oauth.custom.*;
 import com.dreamsecurity.oauth.custom.common.CustomTabDialogFragment;
-import com.dreamsecurity.oauth.custom.common.HttpUtil;
+import com.dreamsecurity.oauth.custom.util.HttpUtil;
 import com.dreamsecurity.oauth.custom.common.OAuthErrorCode;
 import com.dreamsecurity.oauth.custom.common.Logger;
 
@@ -60,9 +60,19 @@ public class OAuthCustomTabActivity extends FragmentActivity implements ServiceC
 
         Logger.d(TAG,"open by intent url ");
 
-        String code = intent.getStringExtra("code");
+        String data = intent.getDataString();
+
+        Uri resultUri = Uri.parse(data);
+
+        resultUri.getQueryParameter("code");
+
+        String code = resultUri.getQueryParameter("code");
+        String state = "";
+
+        String error = "";
+        /*String code = intent.getStringExtra("code");
         String state = intent.getStringExtra("state");
-        String error = intent.getStringExtra("error");
+        String error = intent.getStringExtra("error");*/
 
         Logger.d(TAG,"open by intent url " +
                  "code : " + code +
