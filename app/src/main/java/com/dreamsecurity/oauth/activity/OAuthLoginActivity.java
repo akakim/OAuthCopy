@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -342,13 +343,14 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
     }
 
     private void propagationResult(boolean b) {
-/*        if ( OAuthLogin.mOAuthLoginHandler != null ) {
+       if ( OAuthLogin.getInstance().getOAuthLoginHandler()!= null ) {
             Message msg = new Message();
             msg.what = b ? 1 : 0;
-            OAuthLogin.mOAuthLoginHandler.sendMessage(msg);
-        }*/
+            OAuthLogin.getInstance().getOAuthLoginHandler().sendMessage(msg);
+        }else {
 
-
+           Log.e(TAG, "ffooo Handler is null ");
+       }
     }
 
     private boolean isEnableDoNotKeepActivity() {

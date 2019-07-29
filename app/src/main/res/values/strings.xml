@@ -70,7 +70,7 @@
         menu.
     </string>
     <string name="magic_sso_string_getting_token">MagicOAuth</string>
-    <string name="magic_sso_string_group_id_not_available">Group ID can\'t be used to \'Sign in with NAVER\'. Please
+    <string name="magic_sso_string_group_id_not_available">Group ID can\'t be used to \'Sign in with SSO\'. Please
         sign in as a normal account.
     </string>
     <string name="magic_sso_string_network_state_not_available">Network is not available. Please check your network
@@ -80,5 +80,7 @@
 
 
     <string name="use_application">Open with</string>
+
+    <string name="retry">Retry</string>
 
 </resources>

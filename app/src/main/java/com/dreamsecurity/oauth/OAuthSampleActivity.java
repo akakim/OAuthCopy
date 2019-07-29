@@ -3,6 +3,7 @@ package com.dreamsecurity.oauth;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +14,11 @@ import android.os.Bundle;
 import com.dreamsecurity.oauth.activity.OAuthCustomTabActivity;
 import com.dreamsecurity.oauth.activity.OAuthLoginActivity;
 import com.dreamsecurity.oauth.custom.OAuthPresenter;
+import com.dreamsecurity.oauth.custom.common.OAuthLogin;
+import com.dreamsecurity.oauth.custom.common.OAuthLoginHandler;
+import com.dreamsecurity.oauth.custom.common.OAuthLoginPreferManager;
+
+import java.lang.ref.WeakReference;
 
 
 public class OAuthSampleActivity extends AppCompatActivity implements View.OnClickListener{
@@ -32,7 +38,35 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
     private TextView tvAccessToken;
     private static TextView tvRefreshToken;
     private static TextView tvExpired;
+    private static TextView tvScope;
 
+    OAuthLoginHandler handler = new OAuthLoginHandler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+
+        @Override
+        public void run(boolean success) {
+
+            if( success ) {
+                OAuthLoginPreferManager mgr = new OAuthLoginPreferManager(OAuthSampleActivity.this);
+
+                tvAccessToken.setText(   mgr.getAccessToken());
+
+                tvRefreshToken.setText(   mgr.getRefreshToken());
+                tvExpired.setText(   mgr.getExpiresAt() + "" );
+                tvScope.setText(" success!! ");
+
+                mgr.getAccessToken();
+                mgr.getRefreshToken();
+                mgr.getExpiresAt();
+                mgr.getRefreshToken();
+            }else {
+                tvScope.setText(" not success!! ");
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +82,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
         tvAccessToken = findViewById( R.id.tvAccessToken);
         tvRefreshToken = findViewById( R.id.tvRefreshToken);
         tvExpired = findViewById( R.id.tvExpires );
+        tvScope = findViewById( R.id.tvScope );
 
         Uri.Builder builder = new Uri.Builder();
         builder.scheme( "naver3rdpartylogin");
@@ -55,11 +90,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
         builder.appendPath("/");
 
         Log.d(TAG,"get Uri " + builder.toString());
-/*btnCustomChromeTab
-        OAuthLoginInstance = OAuthLogin.getInstance();
-        OAuthLoginInstance.showDevLog( true );
-        OAuthLoginInstance.init( this, OAUTH_CLIENT_ID,OAUTH_CLIENT_SECRET,OAUTH_CLIENT_NAME);
-*/
+
 
 
     }
@@ -68,6 +99,10 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if( data != null ) {
+            data.getDataString();
+
+        }
     }
 
     @Override
@@ -91,7 +126,8 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.btnAuthorizationAcv:
 
-
+                OAuthLogin.getInstance().init( this, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6","ALnxTUqecvZkmBhTQTPOOzr4W4cTlL4k-1TSLrvm4sNgxeN1SYHWakmODgouraM6BnJrj9LT0as6g6cjlSzClyM","sample");
+                OAuthLogin.getInstance().setOAuthLoginHandler( handler );
                 Intent oauthIntent = new Intent(this,OAuthLoginActivity.class );
 
                 oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6");
