@@ -38,6 +38,12 @@ public class OAuthLoginConnection extends CommonConnection {
         return request(context, requestUrl);
     }
 
+    /*public static OAuthorizedResponse requestPostAccessToken(Context context, String clientId, String clientSecret, String initState, String code,String callback){
+
+    }*/
+
+//    public static OAuthorizedResponse getAccessTokenPost
+
     public static OAuthorizedResponse deleteToken(Context context, String clientId, String clientSecret, String accessToken) {
 
         String requestUrl = generateRequestDeleteAccessTokenUrl(clientId, clientSecret, accessToken, BuildConfig.VERSION_NAME);

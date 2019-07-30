@@ -54,6 +54,7 @@ public class HttpUtil {
 
         return rt;
     }
+
     private static String percentEncode(String s) throws UnsupportedEncodingException {
         if (s == null) {
             return "";
@@ -192,5 +193,11 @@ public class HttpUtil {
     }
 
 
+    public static String JSONConvertNormalString(String st ) {
+
+        return st.replace("\\/","/")
+                .replace("\\r\\n","\\n")
+                .replace("\\r","");
+    }
 
 }

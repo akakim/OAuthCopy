@@ -23,6 +23,8 @@ import com.dreamsecurity.oauth.custom.OAuthCallback;
 import com.dreamsecurity.oauth.custom.OAuthPresenter;
 import com.dreamsecurity.oauth.custom.common.*;
 import com.dreamsecurity.oauth.data.OAuthorizedResponse;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallback {
@@ -303,7 +305,6 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
 
     /**
      * 커스텀 탭으로 로그인 시도
-     * @param loginData 네아로 메타 정보
      * @return 실행 여부
      */
     private boolean tryOAuthByCustomTab( ) {
@@ -404,8 +405,13 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
 
             propagationResult(false);
         } else {
-            accessTokenTask = new GetAccessTokenTask(TestConstant.CLIENT_ID,clientSecret,TestConstant.STATE,code,TestConstant.REDIRECT_URI);
-           accessTokenTask.execute();
+            try {
+                accessTokenTask = new GetAccessTokenTask(TestConstant.CLIENT_ID,TestConstant.STATE,code,TestConstant.REDIRECT_URI);
+                accessTokenTask.execute();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
 
@@ -467,18 +473,27 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
     private class GetAccessTokenTask extends AsyncTask<Void,Void, OAuthorizedResponse> {
 
         String clientId;
-        String clientSecret;
+//        String clientSecret;
         String state;
         String code;
         String callbackUrl;
 
-        public GetAccessTokenTask( String clientId, String clientSecret,String state,String code ,String callbackUrl){
+        JSONObject jsonObject;
+        public GetAccessTokenTask( String clientId,String state,String code ,String callbackUrl) throws JSONException {
 
             this.clientId = clientId;
-            this.clientSecret = clientSecret;
+//            this.clientSecret = clientSecret;
             this.state = state;
             this.code = code;
             this.callbackUrl = callbackUrl;
+
+            jsonObject = new JSONObject();
+
+            jsonObject.put( Constant.PARAM_KEY_CLIENT_ID,clientId );
+            jsonObject.put( Constant.PARAM_KEY_STATE, state );
+            jsonObject.put( Constant.PARAM_KEY_CODE,code );
+            jsonObject.put( Constant.PARAM_KEY_REDIRECT_URI, callbackUrl );
+
         }
         @Override
         protected void onPreExecute() {
@@ -489,13 +504,18 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
         @Override
         protected OAuthorizedResponse doInBackground(Void... voids) {
             try {
-                return OAuthLoginConnection.requestAccessToken(OAuthLoginActivity.this,
+
+                return DefaultOAuthConnector.post(
+                        TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL,
+                        jsonObject
+                );
+                /*return OAuthLoginConnection.requestAccessToken(OAuthLoginActivity.this,
                         clientId,
                         clientSecret,
                         state,
                         code,
                         callbackUrl
-                );
+                );*/
             } catch (Exception e) {
                 return new OAuthorizedResponse(OAuthErrorCode.CLIENT_ERROR_CONNECTION_ERROR);
             }

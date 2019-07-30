@@ -1,21 +1,22 @@
 package com.dreamsecurity.oauth.custom.common;
 
 import android.content.Context;
-import com.dreamsecurity.oauth.custom.util.HttpUtil;
 import com.dreamsecurity.oauth.custom.util.AppUtil;
+import com.dreamsecurity.oauth.custom.util.HttpUtil;
 import com.dreamsecurity.oauth.data.HttpResponse;
+import com.dreamsecurity.oauth.data.OAuthorizedResponse;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class CommonConnection {
-
-    private static final String TAG = "CommonConnection";
+public class DefaultHttpConnector {
+    private static final String TAG = "DefaultHttpConnector";
 
     protected static HttpURLConnection httpUrlConnection = null;
 
@@ -23,41 +24,57 @@ public class CommonConnection {
     protected static boolean mCancel;
 
     // network timeout
-    public static int 			TIMEOUT = 10000;
+    public static int TIMEOUT = 10000;
 
+    JSONObject jsonObj;
 
-    /**
-     * URL 로 request 후 reponse로 ResponseData를 리턴
-     * @param context context
-     * @param strRequestUrl request url
-     * @param cookies cookie string
-     * @param userAgent useragent
-     * @return : url request 로 얻은 response data를 리턴. response data는 content 와 status-code, cookie 로 구성됨
-     */
-    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent) {
-        return request(context, strRequestUrl, cookies, userAgent, false);
+    private static HttpsURLConnection getDefaultHttpsConnection(String method, String url, int timeout, JSONObject outputObject) throws MalformedURLException, IOException {
+        return (HttpsURLConnection) getDefaultHttpConnection(method, url,  timeout, outputObject);
     }
 
 
-    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader) {
-        return request(context, strRequestUrl, cookies, userAgent, authHeader, false, TIMEOUT);
-    }
+    private static HttpURLConnection getDefaultHttpConnection(String method, String url, int timeout, JSONObject outputObject) throws MalformedURLException, IOException {
+        HttpURLConnection urlConn = (HttpURLConnection) (new URL(url)).openConnection();
 
-    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, boolean httpClientIsolated) {
-        return request(context, strRequestUrl, cookies, userAgent, null, httpClientIsolated, TIMEOUT);
-    }
+        urlConn.setDefaultUseCaches(false);
+        urlConn.setUseCaches(false);
 
-    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated) {
-        return request(context, strRequestUrl, cookies, userAgent, authHeader, httpClientIsolated, TIMEOUT);
-    }
+        urlConn.setRequestMethod(method);
+//        urlConn.setRequestProperty("User-Agent", userAgent);
 
+//        urlConn.addRequestProperty();
+        // TODO 파일 다운로드시엔 다른거 사용해야함. urlConn.setRequestProperty("Content-Type", "Application/xml");
+
+        urlConn.setReadTimeout(timeout);
+        urlConn.setConnectTimeout(timeout);
+
+        urlConn.setDoInput(true);
+
+        if ("GET".equalsIgnoreCase(method)) {
+            urlConn.setDoOutput(false);
+        } else {
+            urlConn.setDoOutput(true);
+            StringBuffer sb = new StringBuffer();
+            OutputStream outputStream =  urlConn.getOutputStream();
+
+            sb.append( HttpUtil.JSONConvertNormalString( outputObject.toString() ) );
+
+            Logger.d(TAG," get Parameter : " + HttpUtil.JSONConvertNormalString( outputObject.toString() ) );
+            outputStream.write( sb.toString().getBytes() );
+            outputStream.flush();
+        }
+
+
+
+        return urlConn;
+    }
     /*
      * get 방식의 login 관련 request 를 해주는 메쏘드
      */
-    public static HttpResponse request(Context context, String strRequestUrl, String cookies, String userAgent, String authHeader, boolean httpClientIsolated, int timeout) {
+    protected static HttpResponse httpRequest(String method , String strRequestUrl, String authHeader, boolean httpClientIsolated, int timeout , JSONObject outputObject ) {
 
         HttpResponse res = new HttpResponse();
-      //  HttpResponse httpRes= new HttpResponse();
+        //  HttpResponse httpRes= new HttpResponse();
         List<String> postCookies = new ArrayList<String>();
 
         HttpsURLConnection securityHttpClient = null;
@@ -88,17 +105,17 @@ public class CommonConnection {
 
                 // HttpClient 설정
                 if (httpClientIsolated) {
-                    if (userAgent != null && userAgent.length() > 0) {
+
+                    securityHttpClient = getDefaultHttpsConnection(method, strRequestUrl ,timeout , outputObject );
+
+                    /*  if ("GET".equals( method ) ) {
                         securityHttpClient = getDefaultHttpsConnection("POST", strRequestUrl, userAgent, timeout);
                     } else {
                         securityHttpClient = getDefaultHttpsConnection("GET", strRequestUrl, context, timeout);
-                    }
+                    }*/
                 } else {
-                    if (userAgent != null && userAgent.length() > 0) {
-                        httpUrlConnection = getDefaultHttpConnection("POST", strRequestUrl, userAgent, timeout);
-                    } else {
-                        httpUrlConnection = getDefaultHttpConnection("GET", strRequestUrl, context, timeout);
-                    }
+                    httpUrlConnection = getDefaultHttpConnection(method, strRequestUrl ,timeout , outputObject );
+
                 }
             } catch (MalformedURLException e) {
                 res.setResultCode(HttpResponse.ResponseDataStat.CLIENT_ACTION_URL_ERROR);
@@ -134,9 +151,9 @@ public class CommonConnection {
 
         try {
             if (httpClientIsolated) {
-                if (null != cookies && cookies.length() > 0) {
-                    securityHttpClient.setRequestProperty("Cookie", cookies);
-                }
+//                if (null != cookies && cookies.length() > 0) {
+//                    securityHttpClient.setRequestProperty("Cookie", cookies);
+//                }
                 if (null != authHeader && authHeader.length() > 0) {
                     securityHttpClient.setRequestProperty("Authorization", authHeader);
                 }
@@ -144,7 +161,7 @@ public class CommonConnection {
                 int responseCode = securityHttpClient.getResponseCode();
                 Logger.i(TAG, "response status code:" + responseCode);
 
-               // postCookies = CookieUtil.getCookieUpperSDK23(httpClient.getHeaderFields());
+                // postCookies = CookieUtil.getCookieUpperSDK23(httpClient.getHeaderFields());
                 String contentType = HttpUtil.getCharsetFromContentTypeHeader(securityHttpClient.getHeaderFields());
 
                 InputStream in = null;
@@ -158,9 +175,9 @@ public class CommonConnection {
                 res.setResponseData(responseCode, contentType, in, postCookies);
 
             } else {
-                if (null != cookies && cookies.length() > 0) {
+               /* if (null != cookies && cookies.length() > 0) {
                     httpUrlConnection.setRequestProperty("Cookie", cookies);
-                }
+                }*/
                 if (null != authHeader && authHeader.length() > 0) {
                     httpUrlConnection.setRequestProperty("Authorization", authHeader);
                 }
@@ -168,7 +185,7 @@ public class CommonConnection {
                 int responseCode = httpUrlConnection.getResponseCode();
                 Logger.i(TAG, "response status code:" + responseCode);
 
-               // postCookies = CookieUtil.getCookieUpperSDK23(httpUrlConnection.getHeaderFields());
+                // postCookies = CookieUtil.getCookieUpperSDK23(httpUrlConnection.getHeaderFields());
                 String contentType = HttpUtil.getCharsetFromContentTypeHeader(httpUrlConnection.getHeaderFields());
 
                 InputStream in = null;
@@ -241,60 +258,6 @@ public class CommonConnection {
         }*/
         return res;
     }
-
-    /**
-     * 로그인 모듈 user-agent 가 설정된 http client 를 리턴
-     * @throws IOException
-     * @throws MalformedURLException
-     */
-    public static HttpsURLConnection getDefaultHttpsConnection(String method, String url, Context context, int timeout) throws MalformedURLException, IOException {
-        String useragent = AppUtil.getUserAgent(context);
-        return getDefaultHttpsConnection(method, url, useragent, timeout);
-    }
-
-    private static HttpsURLConnection getDefaultHttpsConnection(String method, String url, String userAgent, int timeout) throws MalformedURLException, IOException {
-        return (HttpsURLConnection) getDefaultHttpConnection(method, url, userAgent, timeout);
-    }
-
-    public static HttpURLConnection getDefaultHttpConnection(String method, String url, Context context, int timeout) throws MalformedURLException, IOException {
-        String useragent = AppUtil.getUserAgent(context);
-        return getDefaultHttpConnection(method, url, useragent, timeout);
-    }
-
-    private static HttpURLConnection getDefaultHttpConnection(String method, String url, String userAgent, int timeout) throws MalformedURLException, IOException {
-        HttpURLConnection urlConn = (HttpURLConnection) (new URL(url)).openConnection();
-
-        urlConn.setDefaultUseCaches(false);
-        urlConn.setUseCaches(false);
-
-        urlConn.setRequestMethod(method);
-        urlConn.setRequestProperty("User-Agent", userAgent);
-
-//        urlConn.addRequestProperty();
-        // TODO 파일 다운로드시엔 다른거 사용해야함. urlConn.setRequestProperty("Content-Type", "Application/xml");
-
-        urlConn.setReadTimeout(timeout);
-        urlConn.setConnectTimeout(timeout);
-
-        urlConn.setDoInput(true);
-
-        if ("GET".equalsIgnoreCase(method)) {
-            urlConn.setDoOutput(false);
-        } else {
-            urlConn.setDoOutput(true);
-            StringBuffer sb = new StringBuffer();
-            OutputStream outputStream =  urlConn.getOutputStream();
-
-//            sb.append( edParmeter );
-            outputStream.write( sb.toString().getBytes() );
-            outputStream.flush();
-        }
-
-
-
-        return urlConn;
-    }
-
 
     public static boolean isBusy() {
         if (httpUrlConnection != null)

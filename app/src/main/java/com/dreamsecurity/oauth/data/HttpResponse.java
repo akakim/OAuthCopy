@@ -100,6 +100,7 @@ public class HttpResponse {
             reader = new BufferedReader(new InputStreamReader(is));
         }
 
+
         int read;
         StringBuilder buf = new StringBuilder();
         try {
