@@ -322,7 +322,10 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
         oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, "dreamtestlogin://authorize/");
         oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_STATE, "111");
         oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_OAUTH_SDK_VERSION, BuildConfig.VERSION_NAME);*/
-        Intent intent = newParamIntent(OAuthCustomTabActivity.class, "f3b1c70e-6c3d-4344-8a4c-743c67a928e6", "111", "dreamtestlogin://authorize/");
+
+
+        //// TEST /////
+        Intent intent = newParamIntent(OAuthCustomTabActivity.class, TestConstant.CLIENT_ID, TestConstant.STATE, TestConstant.REDIRECT_URI);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, CUSTOMTAB_LOGIN);
         return true;
@@ -401,7 +404,7 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
 
             propagationResult(false);
         } else {
-            accessTokenTask = new GetAccessTokenTask(clientId,clientSecret,"111",code,callbackUrl);
+            accessTokenTask = new GetAccessTokenTask(TestConstant.CLIENT_ID,clientSecret,TestConstant.STATE,code,TestConstant.REDIRECT_URI);
            accessTokenTask.execute();
         }
 
@@ -455,7 +458,8 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
         intent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, clientId);
         intent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, callbackUrl);
         intent.putExtra(OAuthPresenter.INTENT_KEY_STATE, initState);
-        intent.putExtra(OAuthPresenter.INTENT_KEY_OAUTH_SDK_VERSION, BuildConfig.VERSION_NAME);
+        intent.putExtra(OAuthPresenter.INTENT_KEY_SCOPE, TestConstant.SCOPE);
+//        intent.putExtra(OAuthPresenter.INTENT_KEY_OAUTH_SDK_VERSION, BuildConfig.VERSION_NAME);
 
         return intent;
     }
@@ -502,6 +506,7 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
             super.onPostExecute(oAuthorizedResponse);
 
             Logger.d(getClass().getSimpleName(), " onPostExecuted");// TODO : UI 효과 추가.
+            Logger.d(getClass().getSimpleName(), oAuthorizedResponse.toString());// TODO : UI 효과 추가.
 
 
 
@@ -511,7 +516,7 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
                 OAuthLoginPreferManager loginPreferManager = new OAuthLoginPreferManager(OAuthLoginActivity.this);
 
               //  edCompat.setText( oAuthorizedResponse.isSuccess()+"");
-                if( oAuthorizedResponse.isSuccess()) {
+               /* if( oAuthorizedResponse.isSuccess()) {
                     loginPreferManager.setAccessToken(oAuthorizedResponse.getAccessToken());
                     loginPreferManager.setRefreshToken(oAuthorizedResponse.getRefreshToken());
                     loginPreferManager.setExpiresAt(System.currentTimeMillis() / 1000 + oAuthorizedResponse.getExpiresIn());
@@ -530,7 +535,7 @@ public class OAuthLoginActivity extends AppCompatActivity implements OAuthCallba
                         i.putExtra(OAuthPresenter.EXTRA_ERROR_DESCRIPTION, oAuthorizedResponse.getErrorDescription());
                         setResult(RESULT_CANCELED, i);
                     }
-                }
+                }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }

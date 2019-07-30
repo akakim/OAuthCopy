@@ -12,6 +12,7 @@ public interface OAuthPresenter extends Constant {
     String INTENT_KEY_CLIENT_SECRET = "client_secret";
     String INTENT_KEY_REDIRECT_URI = "redirect_uri";
     String INTENT_KEY_STATE = "state";
+    String INTENT_KEY_SCOPE = "scope";
 
     // 네이버앱 혹은 회사 앱을 사용을 이용하여 전달된 Parameter
     String INTENT_KEY_APP_NAME = "app_name";

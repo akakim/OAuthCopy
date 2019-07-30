@@ -143,14 +143,14 @@ public class OAuthLoginConnection extends CommonConnection {
     private Map<String, String> newAuthorizationParamMap(String clientId, String state, String callbackUrl, String locale, String network, String inAppType, String version) {
         Map<String, String> paramArray = new HashMap<>();
         paramArray.put("client_id", clientId);
-        paramArray.put("inapp_view", inAppType);
+/*        paramArray.put("inapp_view", inAppType);*/
         paramArray.put("response_type", "code");
-        paramArray.put("oauth_os", "android");
-        paramArray.put("version", "android-"+ version);
+      /*  paramArray.put("oauth_os", "android");
+        paramArray.put("version", "android-"+ version);*/
         if (null != network) {
             paramArray.put("network", network);
         }
-        paramArray.put("locale", locale);
+//        paramArray.put("locale", locale);
         paramArray.put("redirect_uri", callbackUrl);        // getQueryParameter 에서 encoding 됨. 2014.11.27일 강병국님 메일로 수정됨
         paramArray.put("state", state);
 
@@ -166,17 +166,17 @@ public class OAuthLoginConnection extends CommonConnection {
         Map<String, String> paramArray = new HashMap<String, String>();
 
         paramArray.put("client_id", clientId);
-        paramArray.put("client_secret", clientSecret);
+//        paramArray.put("client_secret", clientSecret);
         paramArray.put("grant_type", "authorization_code");
         paramArray.put("state", state);
         paramArray.put("code", code);
-        paramArray.put("oauth_os", "android");
-        paramArray.put("version", "android-"+ version);
+   /*     paramArray.put("oauth_os", "android");
+        paramArray.put("version", "android-"+ version);*/
         paramArray.put("redirect_uri", callback);
 
 
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
     }
 
     public static String generateRequestRefreshAccessTokenUrl(String clientId, String clientSecret, String refreshToken, String version) {
@@ -184,14 +184,14 @@ public class OAuthLoginConnection extends CommonConnection {
         Map<String, String> paramArray = new HashMap<String, String>();
 
         paramArray.put("client_id", clientId);
-        paramArray.put("client_secret", clientSecret);
+//        paramArray.put("client_secret", clientSecret);
         paramArray.put("grant_type", "refresh_token");
         paramArray.put("refresh_token", refreshToken);
         paramArray.put("oauth_os", "android");
         paramArray.put("version", "android-"+ version);
 
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
     }
 
     public static String generateRequestDeleteAccessTokenUrl(String clientId, String clientSecret, String accessToken, String version) {
@@ -207,7 +207,7 @@ public class OAuthLoginConnection extends CommonConnection {
         paramArray.put("version", "android-"+ version);
 
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, HttpUtil.getQueryParameter(paramArray));
     }
 
 }

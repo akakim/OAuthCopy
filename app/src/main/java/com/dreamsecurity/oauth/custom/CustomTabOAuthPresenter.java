@@ -98,6 +98,7 @@ public class CustomTabOAuthPresenter implements OAuthPresenter {
 
             return HttpUtil.generateRequestCustomTabAuthURL(
                     oauthParam.getStringExtra( INTENT_KEY_CLIENT_ID ),
+                    oauthParam.getStringExtra( INTENT_KEY_STATE ),
                     "4G",
                     oauthParam.getStringExtra( INTENT_KEY_REDIRECT_URI),
                     "1_0_1"

@@ -6,7 +6,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".OAuthSampleActivity"
+        tools:context=".activity.OAuthSampleActivity"
         android:orientation="vertical">
 
 
@@ -112,6 +112,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/btnAuthorizationAcv"
             android:text="테스트 인가 화면">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDreamAuth"
+            android:text="드림 테스트 로그인 ">
 
     </androidx.appcompat.widget.AppCompatButton>
 

@@ -132,4 +132,19 @@ public class OAuthorizedResponse {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "OAuthorizedResponse{" +
+                "result='" + result + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", expiredIn=" + expiredIn +
+                ", refreshToken='" + refreshToken + '\'' +
+                ", tokenType='" + tokenType + '\'' +
+                ", errorCode=" + errorCode +
+                ", errorDescription='" + errorDescription + '\'' +
+                ", status=" + status +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }

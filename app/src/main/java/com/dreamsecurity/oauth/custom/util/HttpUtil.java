@@ -3,6 +3,7 @@ package com.dreamsecurity.oauth.custom.util;
 import android.text.TextUtils;
 import com.dreamsecurity.oauth.custom.common.Constant;
 import com.dreamsecurity.oauth.custom.common.Logger;
+import com.dreamsecurity.oauth.custom.common.TestConstant;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -111,32 +112,33 @@ public class HttpUtil {
     }
 
 
-    public static String generateRequestWebVIewAuthURL(String clientID ,String network,String callbackURL,String version){
+    public static String generateRequestWebVIewAuthURL(String clientID ,String state, String network,String callbackURL,String version){
 
-        return generateRequestAuthorizationURL(clientID,"web_view",network,callbackURL,version);
+        return generateRequestAuthorizationURL(clientID,state,"web_view",network,callbackURL,version);
 
     }
 
-    public static String generateRequestCustomTabAuthURL(String clientID , String network, String callbackURL, String version){
-        return generateRequestAuthorizationURL(clientID,"custom_tab",network,callbackURL,version);
+    public static String generateRequestCustomTabAuthURL(String clientID ,String state,  String network, String callbackURL, String version){
+        return generateRequestAuthorizationURL(clientID,state,"custom_tab",network,callbackURL,version);
     }
 
-    public static String generateRequestAuthorizationURL(String clientID ,String inAppType,String network,String callbackURL,String version){
+    public static String generateRequestAuthorizationURL(String clientID ,String state,String inAppType,String network,String callbackURL,String version){
 
         Map<String,String> resultMap = new HashMap<>();
 
         resultMap.put( Constant.PARAM_KEY_CLIENT_ID , clientID);
         resultMap.put( Constant.PARAM_KEY_REDIRECT_URI , callbackURL );
         resultMap.put( Constant.PARAM_KEY_GRANT_TYPE , Constant.PARAM_KEY_CODE );
+        resultMap.put( Constant.PARAM_STATE_CODE , state );
 
         /* 아래의 3 값은 oauth 규격 외 인자값들 . */
-        resultMap.put( Constant.PARAM_NETWORK , network);
-        resultMap.put( Constant.PARAM_APP_TYPE , inAppType );
+//        resultMap.put( Constant.PARAM_NETWORK , network);
+/*        resultMap.put( Constant.PARAM_APP_TYPE , inAppType );
         resultMap.put(Constant.PARAM_OS, "android");
-        resultMap.put(Constant.PARAM_VERSION, "android-"+ version);
+        resultMap.put(Constant.PARAM_VERSION, "android-"+ version);*/
         resultMap.put(Constant.PARAM_KEY_RESPONSE_TYPE, Constant.PARAM_VALUE_RESPONSE_CODE);
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_AUTH_URL , getQueryParameter( resultMap ));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_AUTH_URL , getQueryParameter( resultMap ));
     }
 
     public static String generateRequestAccessTokenUrl(String clientId, String clientSecret, String state, String code, String locale, String version) {
@@ -152,7 +154,7 @@ public class HttpUtil {
         paramArray.put( Constant.PARAM_LOCALE_CODE, locale);
 
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
     }
 
     public String generateRequestRefreshAccessTokenUrl(String clientId, String clientSecret, String refreshToken, String locale, String version) {
@@ -167,7 +169,7 @@ public class HttpUtil {
         paramArray.put("version", "android-"+ version);
         paramArray.put("locale", locale);
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
     }
 
 
@@ -186,7 +188,7 @@ public class HttpUtil {
         paramArray.put("version", "android-"+ version);
         paramArray.put("locale", locale);
 
-        return String.format("%s%s", Constant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
+        return String.format("%s%s", TestConstant.OAUTH_REQUEST_ACCESS_TOKEN_URL, getQueryParameter(paramArray));
     }
 
 

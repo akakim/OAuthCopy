@@ -12,12 +12,16 @@ public interface Constant {
     String OAUTH_REQUEST_AUTH_URL = "http://10.10.30.196:50001/authorize?";
     String OAUTH_REQUEST_ACCESS_TOKEN_URL = "http://10.10.30.196:50001/token?";
 
+
+
     // 로그인 페이지를 요청시 사용함 .
     String PARAM_KEY_CLIENT_ID = "client_id";
     String PARAM_KEY_CLIENT_SECRET = "client_secret";
     String PARAM_KEY_REDIRECT_URI = "redirect_uri";
     String PARAM_KEY_GRANT_TYPE = "grant_type";
     String PARAM_KEY_RESPONSE_TYPE = "response_type";
+    String PARAM_KEY_SCOPE = "scope";
+    String PARAM_KEY_VALUE = "address name";
 
     String PARAM_KEY_CODE = "authorization_code";
     String PARAM_STATE_CODE = "state";

@@ -1,4 +1,4 @@
-package com.dreamsecurity.oauth;
+package com.dreamsecurity.oauth.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,29 +11,18 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.dreamsecurity.oauth.activity.OAuthCustomTabActivity;
-import com.dreamsecurity.oauth.activity.OAuthLoginActivity;
+import com.dreamsecurity.oauth.BuildConfig;
+import com.dreamsecurity.oauth.R;
 import com.dreamsecurity.oauth.custom.OAuthPresenter;
 import com.dreamsecurity.oauth.custom.common.OAuthLogin;
 import com.dreamsecurity.oauth.custom.common.OAuthLoginHandler;
 import com.dreamsecurity.oauth.custom.common.OAuthLoginPreferManager;
-
-import java.lang.ref.WeakReference;
+import com.dreamsecurity.oauth.custom.common.TestConstant;
 
 
 public class OAuthSampleActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "OAuthSampleActivity";
-
-    /**
-     * client 정보를 넣어준다.
-     */
-    private static String OAUTH_CLIENT_ID = "jyvqXeaVOVmV";
-    private static String OAUTH_CLIENT_SECRET = "527300A0_COq1_XV33cf";
-    private static String OAUTH_CLIENT_NAME = "네이버 아이디로 로그인";
-
-//    private static OAuthLogin OAuthLoginInstance;
-    private static Context mContext;
 
     private TextView tvAccessToken;
     private static TextView tvRefreshToken;
@@ -78,6 +67,7 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
         findViewById( R.id.btnRefresh).setOnClickListener( this );
         findViewById( R.id.btnCustomChromeTab).setOnClickListener( this );
         findViewById( R.id.btnAuthorizationAcv).setOnClickListener( this );
+        findViewById( R.id.btnDreamAuth).setOnClickListener( this );
 
         tvAccessToken = findViewById( R.id.tvAccessToken);
         tvRefreshToken = findViewById( R.id.tvRefreshToken);
@@ -138,6 +128,18 @@ public class OAuthSampleActivity extends AppCompatActivity implements View.OnCli
 //                oauthIntent.putExtra(OAuthPresenter.INTENT_KEY_RESPONSE_TYPE, BuildConfig.VERSION_NAME);
 
                 startActivity( oauthIntent );
+                break;
+
+                case R.id.btnDreamAuth:
+                OAuthLogin.getInstance().setOAuthLoginHandler( handler );
+                Intent dreamIntent = new Intent(this,OAuthLoginActivity.class );
+
+                dreamIntent.putExtra(OAuthPresenter.INTENT_KEY_CLIENT_ID, TestConstant.CLIENT_ID);
+                dreamIntent.putExtra(OAuthPresenter.INTENT_KEY_REDIRECT_URI, TestConstant.REDIRECT_URI);
+                dreamIntent.putExtra(OAuthPresenter.INTENT_KEY_STATE, TestConstant.STATE);
+
+
+                startActivity( dreamIntent );
                 break;
         }
     }
